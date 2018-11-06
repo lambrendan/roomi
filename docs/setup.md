@@ -12,7 +12,7 @@ $ nvm use 10.12
 ```
 Install relevant node packages
 ```bash
-$ npm install express mysql passport passport-local expression-session body-parser
+$ npm install express mysql passport passport-local express-session body-parser
 ```
 
 Download MySQL for your particular OS from 
