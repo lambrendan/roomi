@@ -14,7 +14,7 @@ How to run application:
 ```bash
 $ node server.js
 ```
-checkout localhost:3000 to our application!
+checkout localhost:3000 to see our application!
 
 Begin Coding:
 
