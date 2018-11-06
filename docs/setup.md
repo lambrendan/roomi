@@ -10,6 +10,14 @@ $ curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.33.0/install.sh |
 $ nvm install 10.12
 $ nvm use 10.12
 ```
+Install relevant node packages
+```bash
+$ npm install express mysql passport passport-local expression-session body-parser
+```
+
+Download MySQL for your particular OS from 
+https://dev.mysql.com/downloads/mysql/
+
 How to run application:
 ```bash
 $ node server.js
