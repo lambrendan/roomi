@@ -10,6 +10,14 @@ var session = require('express-session');
 app.use(bodyParser.urlencoded( { extended: false }));  
 app.use(bodyParser.json());
 
+app.use(passport.initialize());
+app.use(passport.session());
+
+app.use(session({
+    secret: 'roomi',
+    resave: false,
+    saveUninitialized: false
+}))
 app.use('/', router);
 
 app.listen(3000, '0.0.0.0');
