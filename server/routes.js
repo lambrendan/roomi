@@ -41,7 +41,7 @@ router.post('/signup', function(req,res ) {
                         res.send({
                             "code": 400,
                             "failed": true,
-                            "message": "error occured"
+                            "message": error
                         })
                     }
                     else {
