@@ -15,34 +15,34 @@ const dashboardRoutes = [
     component: Dashboard
   },
   {
-    path: "/user",
+    path: "/dashboard/user",
     name: "User Profile",
     icon: "pe-7s-user",
     component: UserProfile
   },
   {
-    path: "/table",
+    path: "/dashboard/table",
     name: "Table List",
     icon: "pe-7s-note2",
     component: TableList
   },
   {
-    path: "/typography",
+    path: "/dashboard/typography",
     name: "Typography",
     icon: "pe-7s-news-paper",
     component: Typography
   },
-  { path: "/icons", name: "Icons", icon: "pe-7s-science", component: Icons },
-  { path: "/maps", name: "Maps", icon: "pe-7s-map-marker", component: Maps },
+  { path: "/dashboard/icons", name: "Icons", icon: "pe-7s-science", component: Icons },
+  { path: "/dashboard/maps", name: "Maps", icon: "pe-7s-map-marker", component: Maps },
   {
-    path: "/notifications",
+    path: "/dashboard/notifications",
     name: "Notifications",
     icon: "pe-7s-bell",
     component: Notifications
   },
   {
     upgrade: true,
-    path: "/upgrade",
+    path: "/dashboard/upgrade",
     name: "Upgrade to PRO",
     icon: "pe-7s-rocket",
     component: Upgrade

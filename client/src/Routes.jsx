@@ -15,7 +15,7 @@ class Routes extends Component {
       <div>
           <Switch>
             {indexRoutes.map((prop, key) => {
-                return <Route exact path={prop.path} component={prop.component} key={key} />;
+                return <Route path={prop.path} component={prop.component} key={key} />;
             })}
         </Switch>
       </div>
