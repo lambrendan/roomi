@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import indexRoutes from "routes/index.jsx";
-import {  Route, Switch } from "react-router-dom";
+import {  Route, Switch, Router } from "react-router-dom";
 
 
 

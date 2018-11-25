@@ -1,9 +1,13 @@
 import React from 'react';
+import Sidebar from '../../components/Sidebar/Sidebar';
+
 
 class ShoppingList extends React.Component {
 
     render() {
-        return null;
+        return(
+            <Sidebar {...this.props} />
+        );
     }
 }
 
