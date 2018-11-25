@@ -1,9 +1,12 @@
 import React from 'react';
+import Sidebar from '../../components/Sidebar/Sidebar';
 
 class BillsAndPayments extends React.Component {
 
     render() {
-        return null;
+        return(
+            <Sidebar {...this.props} />
+        );
     }
 }
 
