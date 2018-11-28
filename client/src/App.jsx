@@ -14,18 +14,18 @@ class App extends Component {
   }
 
   componentDidMount() {
-    this.checkUser();
-    // var input = {
-    //   'email': 'brendan@gmail.com',
-    //   'password': 'abcd'
-    // }
-    // axios.post("/logout", input)
-    // .then( res=> {
+    /*this.checkUser();
+    var input = {
+      'email': 'brendan@gmail.com',
+      'password': 'abcd'
+    }
+    axios.post("/logout", input)
+    .then( res=> {
 
-    // })
-    // .catch( err => {
+    })
+    .catch( err => {
 
-    // })
+    })*/
   }
 
   updateUser = booleanVal=> {

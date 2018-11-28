@@ -24,6 +24,7 @@ class JoinHousehold extends Component {
         axios.post("/joinHouse", constants)
         .then( (res) => {
             if(res.data.success === true) {
+                this.props.hasHousehold(true);
                 console.log(this.props);
             }
             else{
