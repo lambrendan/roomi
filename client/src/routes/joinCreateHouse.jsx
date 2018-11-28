@@ -3,8 +3,8 @@ import JoinHousehold from "layouts/JoinHousehold/JoinHousehold.jsx";
 
 
 var initHouseIndexRoutes = [
-    { path: "/initHouse/createHouse", name: "Init", component: InitHousehold},
-    { path: "/initHouse/joinHouse", name: "Join", component: JoinHousehold}
+    { path: "/init/createHouse", name: "Init", component: InitHousehold},
+    { path: "/init/joinHouse", name: "Join", component: JoinHousehold}
 ];
 
 export default initHouseIndexRoutes;
