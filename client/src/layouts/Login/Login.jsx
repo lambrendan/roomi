@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { Button, FormGroup, FormControl, ControlLabel } from "react-bootstrap";
+import { withRouter } from 'react-router-dom' 
 import axios from 'axios';
 import "./Login.css";
 
@@ -25,6 +26,7 @@ class Login extends Component {
       .then(res => {
         if( res.data.success === true ) {
           this.props.updateUser( true );
+          this.props.history.push("/init/createHouse")
         }
         else {
           this.props.updateUser( false );
@@ -54,7 +56,6 @@ class Login extends Component {
   }
 
   render() {
-    console.log(this.props)
     return (
             <div className="Login">
                 <form onSubmit={this.handleSubmit}>
@@ -90,4 +91,4 @@ class Login extends Component {
     );
   }
 }
-export default Login;
+export default withRouter(Login);

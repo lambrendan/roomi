@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import initHouseIndexRoutes from '../../routes/joinCreateHouse.jsx'
 import { Navbar, Nav, NavItem } from "react-bootstrap";
 import { LinkContainer } from 'react-router-bootstrap';
-import { Switch, Route } from 'react-router-dom'; 
+import { Switch, Route, Redirect } from 'react-router-dom'; 
 import "./CreateHouse.css"
 
 class CreateHouse extends Component {
@@ -18,14 +18,14 @@ class CreateHouse extends Component {
                             <Nav pullLeft>
                                 <LinkContainer to="/init/createHouse">
                                     <NavItem>
-                                        Join A Household
+                                        Create A Household
                                     </NavItem>
                                 </LinkContainer>
                             </Nav>
                             <Nav pullRight>
                                 <LinkContainer to="/init/joinHouse">
                                     <NavItem>
-                                        Create A Household
+                                        Join A Household
                                     </NavItem>
                                 </LinkContainer>
                             </Nav>

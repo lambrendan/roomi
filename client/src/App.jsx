@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import Initial from "./layouts/Initial/Initial.jsx";
 import axios from 'axios';
 import initHouseIndexRoutes from "./routes/initialHouse.jsx"
-import { Switch, Route, Redirect } from 'react-router-dom' 
+import { Switch, Route, Redirect} from 'react-router-dom' 
 import HouseRoutes from "./HouseRoutes.jsx"
 import Household from "./layouts/Household/Household.jsx";
 
@@ -13,19 +13,20 @@ class App extends Component {
     this.state = { isLoggedIn: false, user: null  }
   }
 
+
   componentDidMount() {
     this.checkUser();
-    // var input = {
-    //   'email': 'brendan@gmail.com',
-    //   'password': 'abcd'
-    // }
-    // axios.post("/logout", input)
-    // .then( res=> {
+    var input = {
+      'email': 'brendan@gmail.com',
+      'password': 'abcd'
+    }
+    axios.post("/logout", input)
+    .then( res=> {
 
-    // })
-    // .catch( err => {
+    })
+    .catch( err => {
 
-    // })
+    })
   }
 
   updateUser = booleanVal=> {

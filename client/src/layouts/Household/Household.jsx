@@ -10,6 +10,12 @@ class Household extends Component {
     this.state = { hasHousehold: false}
   }
 
+  updateHousehold = event => {
+      this.setState({
+          hasHousehold: event
+      })
+  }
+
   componentDidMount() {
       axios.get('/checkHouse')
       .then(res => {
@@ -33,6 +39,7 @@ class Household extends Component {
     if( this.state.hasHousehold == true ) {
         return(
            <div>
+               <Redirect to="/init/createHouse"/>    
                <HouseRoutes />
            </div> 
         )
@@ -40,7 +47,7 @@ class Household extends Component {
     else {
         return(
             <div>
-                <CreateHouse />
+                <CreateHouse updateHousehold={this.updateHousehold}/>
             </div>
         )
     }

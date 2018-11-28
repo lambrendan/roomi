@@ -12,6 +12,7 @@ class Initial extends Component {
     }
 
     render() {
+        console.log(this.props)
         return( 
             <div className="App container">
                 <Navbar fluid collapseOnSelect>
