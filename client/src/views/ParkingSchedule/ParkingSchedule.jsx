@@ -1,6 +1,11 @@
 import React from 'react';
+<<<<<<< HEAD
 import { RoomiTable } from "components/Table/RoomiTable.jsx";
 import { Button} from 'react-bootstrap';
+=======
+import Sidebar from '../../components/Sidebar/Sidebar';
+
+>>>>>>> master
 
 class ParkingSchedule extends React.Component {
     constructor(props){
@@ -17,6 +22,7 @@ class ParkingSchedule extends React.Component {
         this.setState({ value: event.target.value });
     }
     render() {
+<<<<<<< HEAD
         let parking = [ "P20", "P21", "P23"];
         let assignee = ["Bob", "Rob", "Mike"];
         let heading = ["Parking Spot", "Assignee"];
@@ -27,6 +33,11 @@ class ParkingSchedule extends React.Component {
                 <Button onClick={this.handleOnClick}>Add Parking Spot</Button>
             </div>
         )
+=======
+        return(
+            <Sidebar {...this.props} />
+        );
+>>>>>>> master
     }
 }
 

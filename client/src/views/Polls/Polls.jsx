@@ -1,9 +1,13 @@
 import React from 'react';
+import Sidebar from '../../components/Sidebar/Sidebar';
+
 
 class Polls extends React.Component {
 
     render() {
-        return null;
+        return(
+            <Sidebar {...this.props} />
+        );
     }
 }
 
