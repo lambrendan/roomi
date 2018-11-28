@@ -18,14 +18,14 @@ class CreateHouse extends Component {
                             <Nav pullLeft>
                                 <LinkContainer to="/init/createHouse">
                                     <NavItem>
-                                        Join A Household
+                                        Create A Household
                                     </NavItem>
                                 </LinkContainer>
                             </Nav>
                             <Nav pullRight>
                                 <LinkContainer to="/init/joinHouse">
                                     <NavItem>
-                                        Create A Household
+                                        Join A Household
                                     </NavItem>
                                 </LinkContainer>
                             </Nav>
