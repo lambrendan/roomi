@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
-import indexRoutes from "routes/index.jsx";
+import houseIndexRoutes from "routes/houseIndex.jsx";
+import { Redirect } from "react-router-dom"
 import {  Route, Switch } from "react-router-dom";
 
 
-
-class Routes extends Component {
+class HouseRoutes extends Component {
   constructor( props ) {
     super(props);
     this.state = { email: "", password:"", bookmarks: [], favorites: [], env: "dev"}
@@ -13,8 +13,11 @@ class Routes extends Component {
   render() {
     return (
       <div>
-          <Switch>
-            {indexRoutes.map((prop, key) => {
+        <Switch>
+            {houseIndexRoutes.map((prop, key) => {
+                if(prop.redirect) {
+                  return <Redirect from={prop.from} to={prop.to} key = {key} />
+                }
                 return <Route path={prop.path} component={prop.component} key={key} />;
             })}
         </Switch>
@@ -23,4 +26,4 @@ class Routes extends Component {
   }
 }
 
-export default Routes;
+export default HouseRoutes;
