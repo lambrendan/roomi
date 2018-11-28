@@ -1,9 +1,6 @@
 import React, { Component } from "react";
 import { Button, FormGroup, FormControl, ControlLabel } from "react-bootstrap";
-import { Link } from "react-router-dom";
-import { Navbar, Nav, NavItem } from "react-bootstrap";
-import { LinkContainer } from 'react-router-bootstrap';
-// import axios from 'axios';
+import axios from 'axios';
 import "./Signup.css";
 
 class Signup extends Component {
@@ -25,8 +22,22 @@ class Signup extends Component {
 
   handleRegister = event => {
       event.preventDefault();
+      const user= {
+          "firstName": this.state.first,
+          "lastName": this.state.last,
+          "email": this.state.email,
+          "password": this.state.password
+      }
       if( this.validateForm() == true )  {
-          
+          axios.post('/signup', user)
+          .then( res=> {
+              if( res.data.code === 200 ) {
+                  this.props.history.push('/');
+              }
+          })
+          .catch( err=> {
+              throw err;
+          })
       }
   }
 
@@ -83,6 +94,7 @@ class Signup extends Component {
                     bsSize="large"
                     disabled={!this.validateForm()}
                     type="submit"
+                    onClick={this.handleRegister}
                 >
                     Signup
                 </Button>

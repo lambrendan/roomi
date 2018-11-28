@@ -2,9 +2,15 @@ import React, { Component } from 'react';
 import { Link } from "react-router-dom";
 import { Navbar, Nav, NavItem } from "react-bootstrap";
 import { LinkContainer } from 'react-router-bootstrap';
+import AuthRoutes from "../../AuthRoutes.jsx"
 import "./Initial.css";
 
+
 class Initial extends Component {
+    constructor( props ) {
+        super(props);
+    }
+
     render() {
         return( 
             <div className="App container">
@@ -30,6 +36,7 @@ class Initial extends Component {
                          </Nav>
                      </Navbar.Collapse>
                 </Navbar>
+                <AuthRoutes {...this.props} updateUser = {this.props.updateUser}/>
             </div>
         )
     }

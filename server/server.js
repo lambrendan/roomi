@@ -9,6 +9,27 @@ var session = require('express-session');
 var MySQLStore = require('express-mysql-session')(session);
 const connection = require('./database.js');
 
+const preConnection = mysql.createConnection({
+    host:"localhost",
+    user: "root",
+    password: "roomicse110",
+});
+
+preConnection.connect(function(err) {
+    if( err ) {
+        throw err;
+    }
+    else {
+        preConnection.query("CREATE DATABASE IF NOT EXISTS roomiDB", function( err, result) {
+            if(err) {
+                console.log(error)
+            }
+            else {
+                console.log("DB Initialized")
+            }
+        })
+    }
+})
 
 connection.connect(function(err) {
     if( err ) {
@@ -16,15 +37,25 @@ connection.connect(function(err) {
     }
     else {
         console.log("Connected!");
-        var sql = "CREATE TABLE IF NOT EXISTS users (firstName VARCHAR(255), lastName VARCHAR(255), email VARCHAR(255), password VARCHAR(255) )";
-        connection.query(sql, function(err, result) {
+        var userTable= "CREATE TABLE IF NOT EXISTS users (firstName VARCHAR(255), lastName VARCHAR(255), email VARCHAR(255), password VARCHAR(255), householdID VARCHAR(255) )";
+        connection.query(userTable, function(err, result) {
             if( err ) {
                 console.log(err);
             }
             else {
-                console.log("Table Done");
+                console.log("Users Table Initialized");
             }
         })
+        var household = "CREATE TABLE IF NOT EXISTS household (uniqueID VARCHAR(255), houseName VARCHAR(255), housemate VARCHAR(255) )";
+        connection.query(household, function(err, result) {
+            if( err ) {
+                console.log(err);
+            }
+            else {
+                console.log("Household Initialized");
+            }
+        })
+       
     }
 })
 const sessionStore = new MySQLStore({}, connection);
@@ -49,4 +80,4 @@ app.use(passport.session());
 
 app.use('/', router);
 
-app.listen(3000, '0.0.0.0');
+app.listen(3001, '0.0.0.0');
