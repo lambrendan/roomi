@@ -6,6 +6,7 @@ const session = require('express-session');
 const passport = require('./passport')
 const connection = require('./database.js');
 const LocalStrategy = require('./passport/localStrat');
+const uuiD = require('uuid-by-string');
 
 
 router.get('/check', function(req,res) {
@@ -61,12 +62,13 @@ router.get('/checkHouse', (req,res) => {
 }) 
 
 router.post('/newHouse', function(req,res) {
-    const uniqueID = passwordHash.generate(req.body.uID);
+    const uniqueID = uuiD(req.body.uID);
     const household = {
         'uniqueID': uniqueID,
         'houseName': req.body.house,
         'housemate': req.body.name,
     } 
+    console.log(household);
     var insertDB = 'INSERT INTO household SET ?';
     connection.query(insertDB, household, function(err, results, fields) {
         if( err ) {
@@ -100,14 +102,14 @@ router.post('/newHouse', function(req,res) {
 })
 
 router.post('/joinHouse', function( req, res ) {
-    const uniqueID = passwordHash.generate(req.body.uID);
-    var insertDB = 'SELECT * from household WHERE uniqueID='+ "\"" + uniqueID + "\"";
-    connection.query(insertDB, household, function(err, results, fields) {
+    const uniqueID = uuiD(req.body.uID);
+    var getDB = 'SELECT * from household WHERE uniqueID='+ "\"" + uniqueID + "\"";
+    connection.query(getDB, function(err, results) {
         if( err ) {
             res.json({ 
                 "code": 400,
                 "failed": true,
-                "message": "Couldn't insert into household"
+                "message": "This DB does not contain this household"
             })
         }
         else {
@@ -119,8 +121,13 @@ router.post('/joinHouse', function( req, res ) {
                 })
             }
             else {
-                var alterTable = "ALTER TABLE household ADD COLUMN" + "\"" + req.body.name+ "\"";
-                connection.query(alterTable, function(err, results) {
+                const household = {
+                    'uniqueID': uniqueID,
+                    'houseName': results[0].houseName,
+                    'housemate': req.body.name,
+                } 
+                var insertIntoDB = 'INSERT INTO household SET ?';
+                connection.query(insertIntoDB, household, function(err, results, fields) {
                     if( err ) {
                         res.json({
                             "code": 400,

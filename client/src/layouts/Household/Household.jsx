@@ -15,7 +15,6 @@ class Household extends Component {
           hasHousehold: event
       })
   }
-
   componentDidMount() {
       axios.get('/checkHouse')
       .then(res => {
@@ -39,7 +38,6 @@ class Household extends Component {
     if( this.state.hasHousehold == true ) {
         return(
            <div>
-               <Redirect to="/init/createHouse"/>    
                <HouseRoutes />
            </div> 
         )

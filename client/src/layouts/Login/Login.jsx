@@ -26,7 +26,7 @@ class Login extends Component {
       .then(res => {
         if( res.data.success === true ) {
           this.props.updateUser( true );
-          this.props.history.push("/init/createHouse")
+          this.props.history.push("/createHouse")
         }
         else {
           this.props.updateUser( false );

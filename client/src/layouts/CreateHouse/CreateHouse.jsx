@@ -16,14 +16,14 @@ class CreateHouse extends Component {
                     <Navbar fluid collapseOnSelect>
                         <Navbar.Collapse>
                             <Nav pullLeft>
-                                <LinkContainer to="/init/createHouse">
+                                <LinkContainer to="/createHouse">
                                     <NavItem>
                                         Create A Household
                                     </NavItem>
                                 </LinkContainer>
                             </Nav>
                             <Nav pullRight>
-                                <LinkContainer to="/init/joinHouse">
+                                <LinkContainer to="/joinHouse">
                                     <NavItem>
                                         Join A Household
                                     </NavItem>

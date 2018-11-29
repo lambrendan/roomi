@@ -14,32 +14,32 @@ const dashboardRoutes = [
     component: Dashboard
   },
   {
-    path: "/billsandpayments",
+    path: "/dashboard/billsandpayments",
     name: "Bills and Payments",
     component: BillsAndPayments,
   },
   {
-    path: "/parkingschedule",
+    path: "/dashboard/parkingschedule",
     name: "Parking Schedule",
     component: ParkingSchedule,
   },
   {
-    path: "/rules",
+    path: "/dashboard/rules",
     name: "Rules",
     component: Rules,
   },
   {
-    path: "/chores",
+    path: "/dashboard/chores",
     name: "Chores",
     component: Chores,
   },
   {
-    path: "/shoppinglist",
+    path: "/dashboard/shoppinglist",
     name: "Shopping List",
     component: ShoppingList,
   },
   {
-    path: "/polls",
+    path: "/dashboard/polls",
     name: "Polls",
     component: Polls,
   },
