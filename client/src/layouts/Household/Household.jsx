@@ -45,7 +45,7 @@ class Household extends Component {
     else {
         return(
             <div>
-                <CreateHouse  updateHousehold={this.updateHousehold}/>
+                <CreateHouse updateHousehold={this.updateHousehold}/>
             </div>
         )
     }

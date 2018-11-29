@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { withRouter } from "react-router-dom"
 import { Button, FormGroup, FormControl, ControlLabel } from "react-bootstrap";
 import axios from 'axios';
 import "./Signup.css";
@@ -103,4 +104,4 @@ class Signup extends Component {
     );
   }
 }
-export default Signup;
+export default withRouter(Signup);

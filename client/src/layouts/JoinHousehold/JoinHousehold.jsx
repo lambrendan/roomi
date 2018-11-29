@@ -2,38 +2,49 @@ import React, { Component } from 'react';
 import { Button, FormGroup, FormControl, ControlLabel } from "react-bootstrap";
 import axios from "axios";
 import { style } from "./JoinHousehold.css";
+import { withRouter } from 'react-router-dom';
 
 
 class JoinHousehold extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            householdName: '',
+            name: '',
             householdID: '',
-            error: '',
         };
        
     }
     
     handleOnClick = (event) => {
         event.preventDefault();
-        var constants = {
-            'house': this.state.householdName,
-            'uID': this.state.householdID
-        }
-        axios.post("/joinHouse", constants)
-        .then( (res) => {
-            if(res.data.success === true) {
-                this.props.hasHousehold(true);
-                console.log(this.props);
+        axios.get("/check")
+        .then( res => {
+            this.setState({
+                name: res.data.user.firstName + " "+ res.data.user.lastName
+            })
+            var constants = {
+                'uID': this.state.householdID,
+                'name': this.state.name
             }
-            else{
-                console.log("not a valid household");
-            }
+            axios.post("/joinHouse", constants)
+            .then( (res) => {
+                if(res.data.failed === false) {
+                    this.props.updateHousehold(true);
+                    this.props.history.push('/dashboard')
+                }
+                else{
+                    console.log("not a valid household");
+                }
+            })
+            .catch( err => {
+                throw err;
+            }) 
         })
         .catch( err => {
-            this.setState({error: "Error: Not a valid household"});
-        }) 
+            throw err;
+        })
+       
+        
 
     }
     handleOnChange = (event) =>{
@@ -43,7 +54,7 @@ class JoinHousehold extends Component {
     }
 
     validateForm(){
-        return this.state.householdName.length > 0 && this.state.householdID.length > 0;
+        return this.state.householdID.length > 0;
     }
 
     render() {
@@ -51,15 +62,6 @@ class JoinHousehold extends Component {
         return(
             <div className="JoinHouseHold">
                 <form>
-                <FormGroup controlId="householdName" bsSize="large">
-                    <ControlLabel>Household Name</ControlLabel>
-                    <FormControl
-                    autoFocus
-                    type="text"
-                    value={this.state.householdName}
-                    onChange={this.handleOnChange}
-                    />
-                </FormGroup>
                 <FormGroup controlId="householdID" bsSize="large">
                     <ControlLabel>Household ID</ControlLabel>
                     <FormControl
@@ -86,4 +88,4 @@ class JoinHousehold extends Component {
 
 }
 
-export default JoinHousehold;
+export default withRouter(JoinHousehold);

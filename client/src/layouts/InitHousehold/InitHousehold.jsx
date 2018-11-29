@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Button, FormGroup, FormControl, ControlLabel } from "react-bootstrap";
 import axios from "axios";
+import { withRouter } from 'react-router-dom'
 
 class InitHousehold extends Component {
     constructor(props) {
@@ -8,24 +9,41 @@ class InitHousehold extends Component {
         this.state = {
             householdName: '',
             householdID: '',
+            name: ''
         };
     }
 
     handleOnClick = (event) => {
         event.preventDefault();
-        var constants = {
-            'house': this.state.householdName,
-            'uID': this.state.householdID
-        }
-        axios.post("/newHouse", constants)
-        .then( (res) => {
-            this.props.hasHousehold(true);
-            console.log("yep");
+        axios.get("/check")
+        .then( res => {
+            this.setState({
+                name: res.data.user.firstName + " " + res.data.user.lastName
+            })
+            var constants = {
+                'house': this.state.householdName,
+                'uID': this.state.householdID,
+                'name': this.state.name
+            }
+            axios.post("/newHouse", constants)
+            .then( (res) => {
+                if(res.data.failed === false) {
+                    this.props.updateHousehold(true);
+                    this.props.history.push('/dashboard')
+                }
+                else{
+                    console.log("not a valid household");
+                }
+
+            })
+            .catch( err => {
+                throw err;
+            }) 
         })
         .catch( err => {
-            this.setState({error: "Error: Not a valid household"});
-        }) 
-        console.log("whoops");
+            throw err;
+        })
+       
 
     }
 
@@ -77,4 +95,4 @@ class InitHousehold extends Component {
 
 }
 
-export default InitHousehold;
+export default withRouter(InitHousehold);
