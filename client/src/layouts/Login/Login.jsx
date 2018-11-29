@@ -1,8 +1,7 @@
 import React, { Component } from "react";
 import { Button, FormGroup, FormControl, ControlLabel } from "react-bootstrap";
-import { Link } from "react-router-dom";
-import { Navbar, Nav, NavItem } from "react-bootstrap";
-import { LinkContainer } from 'react-router-bootstrap';
+import { withRouter } from 'react-router-dom' 
+import axios from 'axios';
 import "./Login.css";
 
 class Login extends Component {
@@ -13,6 +12,33 @@ class Login extends Component {
       email: "",
       password: ""
     };
+  }
+
+  handleOnClick = event =>{
+    event.preventDefault();
+    var constants = {
+      'email': this.state.email,
+      'password': this.state.password
+    }
+    axios.post("/signin", constants)
+    .then( (res) => {
+      axios.get("/auth")
+      .then(res => {
+        if( res.data.success === true ) {
+          this.props.updateUser( true );
+          this.props.history.push("/createHouse")
+        }
+        else {
+          this.props.updateUser( false );
+        }
+      })
+      .catch(err => {
+        throw err;
+      })
+    })
+    .catch( err => {
+        console.log(err)
+    }) 
   }
 
   validateForm() {
@@ -55,6 +81,7 @@ class Login extends Component {
                     bsSize="large"
                     disabled={!this.validateForm()}
                     type="submit"
+                    onClick={this.handleOnClick}
                 >
                     Login
                 </Button>
@@ -64,4 +91,4 @@ class Login extends Component {
     );
   }
 }
-export default Login;
+export default withRouter(Login);

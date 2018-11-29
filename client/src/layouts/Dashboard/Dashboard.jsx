@@ -100,6 +100,7 @@ class Dashboard extends Component {
     }
   }
   render() {
+    
     return (
       <div className="wrapper">
         <NotificationSystem ref="notificationSystem" style={style} />
@@ -124,7 +125,7 @@ class Dashboard extends Component {
               if (prop.redirect)
                 return <Redirect from={prop.path} to={prop.to} key={key} />;
               return (
-                <Route path={prop.path} component={prop.component} key={key} />
+                <Route exact path={prop.path} component={prop.component} key={key} />
               );
             })}
           </Switch>
