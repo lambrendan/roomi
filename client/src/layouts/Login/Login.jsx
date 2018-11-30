@@ -10,9 +10,16 @@ class Login extends Component {
 
     this.state = {
       email: "",
-      password: ""
+      password: "",
+      error: false
     };
   }
+
+  getValidationState() {
+    if( this.state.error === true ) {
+        return 'error';
+    }
+}
 
   handleOnClick = event =>{
     event.preventDefault();
@@ -29,15 +36,21 @@ class Login extends Component {
           this.props.history.push("/createHouse")
         }
         else {
-          this.props.updateUser( false );
+          this.setState({
+            error: true
+          })
         }
       })
       .catch(err => {
-        throw err;
+        this.setState({
+          error: true
+        })
       })
     })
     .catch( err => {
-        console.log(err)
+      this.setState({
+        error: true
+      })
     }) 
   }
 
@@ -59,7 +72,7 @@ class Login extends Component {
     return (
             <div className="Login">
                 <form onSubmit={this.handleSubmit}>
-                <FormGroup controlId="email" bsSize="large">
+                <FormGroup validationState={this.getValidationState()} controlId="email" bsSize="large">
                     <ControlLabel>Email</ControlLabel>
                     <FormControl
                     autoFocus
@@ -85,6 +98,7 @@ class Login extends Component {
                 >
                     Login
                 </Button>
+                <p style={{color: 'red'}}>{this.state.error ? "Wrong Credentials. Try Again!" : ""}</p>
                 </form>
             </div>
     

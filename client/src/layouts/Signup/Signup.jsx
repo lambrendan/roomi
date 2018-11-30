@@ -12,13 +12,20 @@ class Signup extends Component {
       email: "",
       password: "",
       first: "",
-      last: ""
+      last: "",
+      error: false,
     };
   }
 
   validateForm() {
     return this.state.email.length > 0 && this.state.password.length > 6 
     && this.state.first.length > 0 && this.state.last.length > 0;
+  }
+
+  getValidationState() {
+      if( this.state.error === true ) {
+          return 'error';
+      }
   }
 
   handleRegister = event => {
@@ -35,9 +42,16 @@ class Signup extends Component {
               if( res.data.code === 200 ) {
                   this.props.history.push('/');
               }
+              else {
+                  this.setState({
+                      error: true
+                  })
+              }
           })
           .catch( err=> {
-              throw err;
+              this.setState({
+                  error: true
+              });
           })
       }
   }
@@ -53,6 +67,7 @@ class Signup extends Component {
   }
 
   render() {
+      console.log(this.state);
     return (
             <div className="Signup">
                 <form onSubmit={this.handleSubmit}>
@@ -73,7 +88,7 @@ class Signup extends Component {
                     onChange={this.handleChange}
                     />
                 </FormGroup>
-                <FormGroup controlId="email" bsSize="large">
+                <FormGroup validationState={this.getValidationState()} controlId="email" bsSize="large">
                     <ControlLabel>Email</ControlLabel>
                     <FormControl
                     autoFocus
@@ -99,6 +114,7 @@ class Signup extends Component {
                 >
                     Signup
                 </Button>
+                <p style={{color: 'red'}}>{this.state.error ? "This Email Already Exists." : ""}</p>
                 </form>
             </div>
     );

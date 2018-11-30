@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { Navbar } from "react-bootstrap";
+import { withRouter } from 'react-router-dom'
 
 import HeaderLinks from "./HeaderLinks.jsx";
 
@@ -64,11 +65,11 @@ class Header extends Component {
           <Navbar.Toggle onClick={this.mobileSidebarToggle} />
         </Navbar.Header>
         <Navbar.Collapse>
-          <HeaderLinks />
+          <HeaderLinks {...this.props} />
         </Navbar.Collapse>
       </Navbar>
     );
   }
 }
 
-export default Header;
+export default withRouter(Header);

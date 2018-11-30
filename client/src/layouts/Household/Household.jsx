@@ -38,14 +38,14 @@ class Household extends Component {
     if( this.state.hasHousehold == true ) {
         return(
            <div>
-               <HouseRoutes />
+               <HouseRoutes {...this.props}/>
            </div> 
         )
     }
     else {
         return(
             <div>
-                <CreateHouse updateHousehold={this.updateHousehold}/>
+                <CreateHouse {...this.props} updateHousehold={this.updateHousehold}/>
             </div>
         )
     }
