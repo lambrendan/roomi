@@ -23,6 +23,7 @@ router.get('/check', function(req,res) {
         })
     }
 })
+
 router.get('/auth', (req,res) => {
     if( req.isAuthenticated()) {
         res.json({ 
