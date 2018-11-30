@@ -17,7 +17,6 @@ class BillsAndPayments extends React.Component {
         this.handleBillAmountChange = this.handleBillAmountChange.bind(this);
         this.handleBillDueDateChange = this.handleBillDueDateChange.bind(this);
 
-        this.deleteBill = this.deleteBill.bind(this);
         this.handleBillDeletion = this.handleBillDeletion.bind(this);
 
         this.handleBillPayment = this.handleBillPayment.bind(this);
@@ -52,16 +51,6 @@ class BillsAndPayments extends React.Component {
         this.setState({showModal: false});
     }
 
-    renderBill(bill, index) {
-        return (
-            <tr key={index}>
-                <td>{bill.name}</td>
-                <td>{bill.amount}</td>
-                <td>{bill.dueDate}</td>
-            </tr>
-        )
-    }
-
     addBill() {
         const billName = this.state.formBillName;
         const billAmount = this.state.formBillAmount;
@@ -75,11 +64,6 @@ class BillsAndPayments extends React.Component {
             formBillAmount: '',
             formBillDueDate: '',});
         this.handleHideModal();
-    }
-
-    deleteBill() {
-        console.log('deletebill');
-        this.handleHideDeleteModal();
     }
 
     handleBillNameChange(e) {
@@ -172,7 +156,6 @@ class BillsAndPayments extends React.Component {
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {/* {this.state.myBillArr.map(this.renderBill)} */}
                                     {this.state.myBillArr.map((bill, index) => {
                                         if(bill.paid === false) {
                                             return (
@@ -199,7 +182,6 @@ class BillsAndPayments extends React.Component {
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {/* {this.state.myBillArr.map(this.renderBill)} */}
                                     {this.state.myBillArr.map((bill, index) => {
                                         if(bill.paid === true) {
                                             return (
