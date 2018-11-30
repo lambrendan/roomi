@@ -18,7 +18,7 @@ class Signup extends Component {
   }
 
   validateForm() {
-    return this.state.email.length > 0 && this.state.password.length > 6 
+    return this.state.email.length > 0 && this.state.password.length > 0 
     && this.state.first.length > 0 && this.state.last.length > 0;
   }
 
