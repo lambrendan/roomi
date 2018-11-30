@@ -1,0 +1,8 @@
+.customTable {
+    display: flex;
+    justify-content: center;
+}
+
+.tableButton {
+    margin: 25px;
+}
