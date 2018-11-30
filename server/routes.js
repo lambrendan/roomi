@@ -72,7 +72,7 @@ router.post('/newHouse', function(req,res) {
         'rules': uniqueID+"-rules",
         'chores': uniqueID+"-chores",
         'shopping': uniqueID+'-shopping',
-        'polls': polls+'-polls'
+        'polls': uniqueID+'-polls'
 
     } 
     var insertDB = 'INSERT INTO household SET ?';
@@ -105,8 +105,8 @@ router.post('/newHouse', function(req,res) {
                             })
                         }
                         else {
-                            var createhouseTable = "CREATE TABLE " + household.bills + " (name VARCHAR(255), amount DECIMAL(19,2), dueDate DATE )" ;
-                            connection.query(createhouseTable, function(err, results) {
+                            var createbillsTable = "CREATE TABLE " + household.bills + " (name VARCHAR(255), amount DECIMAL(19,2), dueDate DATE )" ;
+                            connection.query(createbillsTable, function(err, results) {
                                 if( err ) {
                                     res.json({
                                         "code": 400,
@@ -115,8 +115,8 @@ router.post('/newHouse', function(req,res) {
                                     })
                                 }
                                 else {
-                                    var createhouseTable = "CREATE TABLE " + household.parking + " (parking VARCHAR(255))" ;
-                                    connection.query(createhouseTable, function(err, results) {
+                                    var createparkingTable = "CREATE TABLE " + household.parking + " (parking VARCHAR(255))" ;
+                                    connection.query(createparkingTable, function(err, results) {
                                         if( err ) {
                                             res.json({
                                                 "code": 400,
@@ -125,8 +125,8 @@ router.post('/newHouse', function(req,res) {
                                             })
                                         }
                                         else {
-                                            var createhouseTable = "CREATE TABLE " + household.rules + " (rules VARCHAR(255))" ;
-                                            connection.query(createhouseTable, function(err, results) {
+                                            var createrulesTable = "CREATE TABLE " + household.rules + " (rules VARCHAR(255))" ;
+                                            connection.query(createrulesTable, function(err, results) {
                                                 if( err ) {
                                                     res.json({
                                                         "code": 400,
@@ -135,8 +135,8 @@ router.post('/newHouse', function(req,res) {
                                                     })
                                                 }
                                                 else {
-                                                    var createhouseTable = "CREATE TABLE " + household.chores + " (chores VARCHAR(255))" ;
-                                                    connection.query(createhouseTable, function(err, results) {
+                                                    var createchoresTable = "CREATE TABLE " + household.chores + " (chores VARCHAR(255))" ;
+                                                    connection.query(createchoresTable, function(err, results) {
                                                         if( err ) {
                                                             res.json({
                                                                 "code": 400,
@@ -145,8 +145,8 @@ router.post('/newHouse', function(req,res) {
                                                             })
                                                         }
                                                         else {
-                                                            var createhouseTable = "CREATE TABLE " + household.shopping + " (shopping VARCHAR(255))" ;
-                                                            connection.query(createhouseTable, function(err, results) {
+                                                            var createshoppingTable = "CREATE TABLE " + household.shopping + " (shopping VARCHAR(255))" ;
+                                                            connection.query(createshoppingTable, function(err, results) {
                                                                 if( err ) {
                                                                     res.json({
                                                                         "code": 400,
@@ -155,8 +155,8 @@ router.post('/newHouse', function(req,res) {
                                                                     })
                                                                 }
                                                                 else {
-                                                                    var createhouseTable = "CREATE TABLE " + household.polls + " (polls VARCHAR(255))" ;
-                                                                    connection.query(createhouseTable, function(err, results) {
+                                                                    var createpollsTable = "CREATE TABLE " + household.polls + " (polls VARCHAR(255))" ;
+                                                                    connection.query(createpollsTable, function(err, results) {
                                                                         if( err ) {
                                                                             res.json({
                                                                                 "code": 400,

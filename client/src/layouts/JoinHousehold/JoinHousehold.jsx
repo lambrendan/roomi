@@ -11,8 +11,15 @@ class JoinHousehold extends Component {
         this.state = {
             name: '',
             householdID: '',
+            error: false
         };
        
+    }
+
+    getValidationState() {
+        if( this.state.error === true ) {
+            return 'error';
+        }
     }
     
     handleOnClick = (event) => {
@@ -33,15 +40,21 @@ class JoinHousehold extends Component {
                     this.props.history.push('/dashboard')
                 }
                 else{
-                    console.log("not a valid household");
+                    this.setState({
+                        error: true
+                    })
                 }
             })
             .catch( err => {
-                throw err;
+                this.setState({
+                    error: true
+                })
             }) 
         })
         .catch( err => {
-            throw err;
+            this.setState({
+                error: true
+            })
         })
        
         
@@ -62,7 +75,7 @@ class JoinHousehold extends Component {
         return(
             <div className="JoinHouseHold">
                 <form>
-                <FormGroup controlId="householdID" bsSize="large">
+                <FormGroup validationState={this.getValidationState()} controlId="householdID" bsSize="large">
                     <ControlLabel>Household ID</ControlLabel>
                     <FormControl
                     autoFocus
@@ -80,7 +93,7 @@ class JoinHousehold extends Component {
                 >
                     Join Household!
                 </Button>
-                <p className="errorMsg" style={style}>{error}</p>
+                <p style={{color: 'red'}}>{this.state.error ? "Wrong Household ID" : ""}</p>
                 </form>
             </div>
         )

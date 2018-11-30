@@ -9,8 +9,15 @@ class InitHousehold extends Component {
         this.state = {
             householdName: '',
             householdID: '',
-            name: ''
+            name: '',
+            error: false
         };
+    }
+    
+    getValidationState() {
+        if( this.state.error === true ) {
+            return 'error';
+        }
     }
 
     handleOnClick = (event) => {
@@ -27,21 +34,28 @@ class InitHousehold extends Component {
             }
             axios.post("/newHouse", constants)
             .then( (res) => {
+                console.log(res);
                 if(res.data.failed === false) {
                     this.props.updateHousehold(true);
                     this.props.history.push('/dashboard')
                 }
                 else{
-                    console.log("not a valid household");
+                    this.setState({
+                        error: true
+                    })
                 }
 
             })
             .catch( err => {
-                throw err;
+                this.setState({
+                    error: true
+                })
             }) 
         })
         .catch( err => {
-            throw err;
+            this.setState({
+                error: true
+            })
         })
        
 
@@ -70,7 +84,7 @@ class InitHousehold extends Component {
                     onChange={this.handleOnChange}
                     />
                 </FormGroup>
-                <FormGroup controlId="householdID" bsSize="large">
+                <FormGroup validationState={this.getValidationState()} controlId="householdID" bsSize="large">
                     <ControlLabel>Household ID</ControlLabel>
                     <FormControl
                     autoFocus
@@ -88,6 +102,7 @@ class InitHousehold extends Component {
                 >
                     Create Household!
                 </Button>
+                <p style={{color: 'red'}}>{this.state.error ? "Error: This Household ID already exists": ""}</p>
                 </form>
             </div>
         )

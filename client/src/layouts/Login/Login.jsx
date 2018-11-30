@@ -25,7 +25,7 @@ class Login extends Component {
     event.preventDefault();
     var constants = {
       'email': this.state.email,
-      'password': this.state.password
+      'password': this.state.password 
     }
     axios.post("/signin", constants)
     .then( (res) => {

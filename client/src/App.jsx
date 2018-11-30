@@ -4,6 +4,7 @@ import axios from 'axios';
 import { Switch, Route, Redirect} from 'react-router-dom' 
 import HouseRoutes from "./HouseRoutes.jsx"
 import Household from "./layouts/Household/Household.jsx";
+import logo from "./roomi.png"
 
 
 class App extends Component {
