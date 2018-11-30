@@ -7,6 +7,7 @@ const passport = require('./passport')
 const connection = require('./database.js');
 const LocalStrategy = require('./passport/localStrat');
 const uuiD = require('uuid-by-string');
+const crypto = require('crypto');
 
 router.get('/check', function(req,res) {
     console.log("req is");
@@ -62,137 +63,173 @@ router.get('/checkHouse', (req,res) => {
 }) 
 
 router.post('/newHouse', function(req,res) {
-    const uniqueID = uuiD(req.body.uID);
-    const household = {
-        'uniqueID': uniqueID,
-        'houseName': req.body.house,
-        'housemate': uniqueID + "-housemate",
-        'bills': uniqueID + "-bills",
-        'parking': uniqueID+"-parking",
-        'rules': uniqueID+"-rules",
-        'chores': uniqueID+"-chores",
-        'shopping': uniqueID+'-shopping',
-        'polls': uniqueID+'-polls'
-
-    } 
-    var insertDB = 'INSERT INTO household SET ?';
-    connection.query(insertDB, household, function(err, results, fields) {
+    var checkHouseName = 'SELECT * from household WHERE houseName=' + "\"" + req.body.house + "\"";
+    connection.query(checkHouseName, function(err, results) {
         if( err ) {
             res.json({ 
                 "code": 400,
                 "failed": true,
-                "message": "Couldn't insert into household"
+                "message": "Error occured finding this household"
             })
         }
         else {
-            var insertHousehold = "UPDATE users SET householdID=" + "\""+ uniqueID + "\"" + "WHERE email="+ "\"" + req.user.email + "\"";
-            connection.query(insertHousehold, function(err, results) {
-                if( err ) {
-                    res.json({
-                        "code": 400,
-                        "failed": true,
-                        "message": "Couldn't update user table in DB"
-                    })
-                }
-                else {
-                    var createhouseTable = "CREATE TABLE " + household.housemate + " (housemate VARCHAR(255))" ;
-                    connection.query(createhouseTable, function(err, results) {
-                        if( err ) {
-                            res.json({
-                                "code": 400,
-                                "failed": true,
-                                "message": "Couldn't create table housemate"
-                            })
-                        }
-                        else {
-                            var createbillsTable = "CREATE TABLE " + household.bills + " (name VARCHAR(255), amount DECIMAL(19,2), dueDate DATE )" ;
-                            connection.query(createbillsTable, function(err, results) {
-                                if( err ) {
-                                    res.json({
-                                        "code": 400,
-                                        "failed": true,
-                                        "message": "Couldn't create table bills"
-                                    })
-                                }
-                                else {
-                                    var createparkingTable = "CREATE TABLE " + household.parking + " (parking VARCHAR(255))" ;
-                                    connection.query(createparkingTable, function(err, results) {
-                                        if( err ) {
-                                            res.json({
-                                                "code": 400,
-                                                "failed": true,
-                                                "message": "Couldn't create table parking"
-                                            })
-                                        }
-                                        else {
-                                            var createrulesTable = "CREATE TABLE " + household.rules + " (rules VARCHAR(255))" ;
-                                            connection.query(createrulesTable, function(err, results) {
-                                                if( err ) {
-                                                    res.json({
-                                                        "code": 400,
-                                                        "failed": true,
-                                                        "message": "Couldn't create table rules"
-                                                    })
-                                                }
-                                                else {
-                                                    var createchoresTable = "CREATE TABLE " + household.chores + " (chores VARCHAR(255))" ;
-                                                    connection.query(createchoresTable, function(err, results) {
-                                                        if( err ) {
-                                                            res.json({
-                                                                "code": 400,
-                                                                "failed": true,
-                                                                "message": "Couldn't create table chores"
-                                                            })
-                                                        }
-                                                        else {
-                                                            var createshoppingTable = "CREATE TABLE " + household.shopping + " (shopping VARCHAR(255))" ;
-                                                            connection.query(createshoppingTable, function(err, results) {
-                                                                if( err ) {
-                                                                    res.json({
-                                                                        "code": 400,
-                                                                        "failed": true,
-                                                                        "message": "Couldn't create table shopping"
-                                                                    })
-                                                                }
-                                                                else {
-                                                                    var createpollsTable = "CREATE TABLE " + household.polls + " (polls VARCHAR(255))" ;
-                                                                    connection.query(createpollsTable, function(err, results) {
-                                                                        if( err ) {
-                                                                            res.json({
-                                                                                "code": 400,
-                                                                                "failed": true,
-                                                                                "message": "Couldn't create table polls "
-                                                                            })
-                                                                        }
-                                                                        else {
-                                                                            res.json({
-                                                                                "code": 200,
-                                                                                "failed": false,
-                                                                                "message": "All tables created successfully"
-                                                                            })
-                                                                        }
-                                                                    }) 
-                                                                }
-                                                            }) 
-                                                        }
-                                                    }) 
-                                                }
-                                            })
-                                        }
-                                    }) 
-                                }
-                            }) 
-                        }
-                    })
-                }
-            })
+            if( results == undefined || results.length === 0 ) {
+                const uniqueID = crypto.createHash('sha256').update(req.body.uID).digest('hex')
+                const household = {
+                    'uniqueID': uniqueID,
+                    'houseName': req.body.house,
+                    'housemate': req.body.house + "_housemate",
+                    'bills': req.body.house + "_bills",
+                    'parking': req.body.house+"_parking",
+                    'rules': req.body.house+"_rules",
+                    'chores': req.body.house+"_chores",
+                    'shopping': req.body.house+'_shopping',
+                    'polls': req.body.house+'_polls'
+
+                } 
+                var insertDB = 'INSERT INTO household SET ?';
+                connection.query(insertDB, household, function(err, results, fields) {
+                    if( err ) {
+                        res.json({ 
+                            "code": 400,
+                            "failed": true,
+                            "message": "Couldn't insert into household"
+                        })
+                    }
+                    else {
+                        var insertHousehold = "UPDATE users SET householdID=" + "\""+ uniqueID + "\"" + "WHERE email="+ "\"" + req.user.email + "\"";
+                        connection.query(insertHousehold, function(err, results) {
+                            if( err ) {
+                                res.json({
+                                    "code": 400,
+                                    "failed": true,
+                                    "message": "Couldn't update user table in DB"
+                                })
+                            }
+                            else {
+                                var createhouseTable = "CREATE TABLE " + household.housemate + " (housemate VARCHAR(255))" ;
+                                connection.query(createhouseTable, function(err, results) {
+                                    if( err ) {
+                                        res.json({
+                                            "code": 400,
+                                            "failed": true,
+                                            "message": "Couldn't create table housemate"
+                                        })
+                                    }
+                                    else {
+                                        var createbillsTable = "CREATE TABLE " + household.bills + " (name VARCHAR(255), amount DECIMAL(19,2), dueDate DATE )" ;
+                                        connection.query(createbillsTable, function(err, results) {
+                                            if( err ) {
+                                                res.json({
+                                                    "code": 400,
+                                                    "failed": true,
+                                                    "message": "Couldn't create table bills"
+                                                })
+                                            }
+                                            else {
+                                                var createparkingTable = "CREATE TABLE " + household.parking + " (parkingSpot VARCHAR(255), housemate VARCHAR(255))" ;
+                                                connection.query(createparkingTable, function(err, results) {
+                                                    if( err ) {
+                                                        res.json({
+                                                            "code": 400,
+                                                            "failed": true,
+                                                            "message": "Couldn't create table parking"
+                                                        })
+                                                    }
+                                                    else {
+                                                        var createrulesTable = "CREATE TABLE " + household.rules + " (rules VARCHAR(255))" ;
+                                                        connection.query(createrulesTable, function(err, results) {
+                                                            if( err ) {
+                                                                res.json({
+                                                                    "code": 400,
+                                                                    "failed": true,
+                                                                    "message": "Couldn't create table rules"
+                                                                })
+                                                            }
+                                                            else {
+                                                                var createchoresTable = "CREATE TABLE " + household.chores + " (chore VARCHAR(255), housemate VARCHAR(255))" ;
+                                                                connection.query(createchoresTable, function(err, results) {
+                                                                    if( err ) {
+                                                                        res.json({
+                                                                            "code": 400,
+                                                                            "failed": true,
+                                                                            "message": "Couldn't create table chores"
+                                                                        })
+                                                                    }
+                                                                    else {
+                                                                        var createshoppingTable = "CREATE TABLE " + household.shopping + " (shopping VARCHAR(255))" ;
+                                                                        connection.query(createshoppingTable, function(err, results) {
+                                                                            if( err ) {
+                                                                                res.json({
+                                                                                    "code": 400,
+                                                                                    "failed": true,
+                                                                                    "message": "Couldn't create table shopping"
+                                                                                })
+                                                                            }
+                                                                            else {
+                                                                                var createpollsTable = "CREATE TABLE " + household.polls + " (polls VARCHAR(255))" ;
+                                                                                connection.query(createpollsTable, function(err, results) {
+                                                                                    if( err ) {
+                                                                                        res.json({
+                                                                                            "code": 400,
+                                                                                            "failed": true,
+                                                                                            "message": "Couldn't create table polls "
+                                                                                        })
+                                                                                    }
+                                                                                    else {
+                                                                                        const newHousemate = {
+                                                                                            'housemate': req.user.firstName + " " + req.user.lastName,
+                                                                                        } 
+                                                                                        var insertIntoDB = 'INSERT INTO ' + household.houseName + '_housemate SET ?';
+                                                                                        connection.query(insertIntoDB, newHousemate, function(err, results, fields) {
+                                                                                            if( err ) {
+                                                                                                res.json({
+                                                                                                    "code": 400,
+                                                                                                    "failed": true,
+                                                                                                    "message": "Could not add new housemate to the table"
+                                                                                                })
+                                                                                            }
+                                                                                            else {
+                                                                                                res.json({
+                                                                                                    "code": 200,
+                                                                                                    "failed": false,
+                                                                                                    "message": "All tables created successfully"
+                                                                                                })
+                                                                                            }
+                                                                                        })                                                                                        
+                                                                                    }
+                                                                                }) 
+                                                                            }
+                                                                        }) 
+                                                                    }
+                                                                }) 
+                                                            }
+                                                        })
+                                                    }
+                                                }) 
+                                            }
+                                        }) 
+                                    }
+                                })
+                            }
+                        })
+                    }
+                })
+                
+            }
+            else {
+                res.json({ 
+                    "code": 400,
+                    "failed": true,
+                    "message": "This household already exists"
+                })
+            }
         }
     })
-    
 })
 
 router.post('/joinHouse', function( req, res ) {
-    const uniqueID = uuiD(req.body.uID);
+    const uniqueID = crypto.createHash('sha256').update(req.body.uID).digest('hex')
     var getDB = 'SELECT * from household WHERE uniqueID='+ "\"" + uniqueID + "\"";
     connection.query(getDB, function(err, results) {
         if( err ) {
@@ -212,9 +249,9 @@ router.post('/joinHouse', function( req, res ) {
             }
             else {
                 const housemate = {
-                    'housemate': req.body.name,
+                    'housemate': req.user.firstName + " " + req.user.lastName,
                 } 
-                var insertIntoDB = 'INSERT INTO' + uniqueID + '-housemate SET ?';
+                var insertIntoDB = 'INSERT INTO ' + results[0].houseName + '_housemate SET ?';
                 connection.query(insertIntoDB, housemate, function(err, results, fields) {
                     if( err ) {
                         res.json({
