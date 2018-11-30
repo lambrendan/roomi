@@ -147,7 +147,7 @@ router.post('/newHouse', function(req,res) {
                                                                 })
                                                             }
                                                             else {
-                                                                var createchoresTable = "CREATE TABLE " + household.chores + " (chore VARCHAR(255), housemate VARCHAR(255))" ;
+                                                                var createchoresTable = "CREATE TABLE " + household.chores + " (chore VARCHAR(255), housemate VARCHAR(255), isDone TINY(1))" ;
                                                                 connection.query(createchoresTable, function(err, results) {
                                                                     if( err ) {
                                                                         res.json({
