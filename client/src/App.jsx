@@ -37,7 +37,6 @@ class App extends Component {
   checkUser = () => {
     axios.get("/auth")
     .then( res=> {
-      console.log(res.data);
       if( res.data.success === true ) {
         this.setState({
           isLoggedIn: true,
@@ -60,7 +59,7 @@ class App extends Component {
     if( this.state.isLoggedIn ) {
       return(
         <div> 
-          <Household/>
+          <Household {...this.state} updateUser={this.updateUser}/>
         </div>
       )
 
