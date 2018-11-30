@@ -352,27 +352,67 @@ router.post('/logout', function(req,res) {
 })
 
 router.get('/chores', function(req,res) {
-    var getChores = 'SELECT chores from ' + "\"" + req.user.householdName + "\"" + '_chores';
-    connection.query(getChores, function(err, results) {
+    var getHouseName = 'SELECT houseName from household where uniqueID=' + "\"" + req.user.householdID + "\"";
+    connection.query(getHouseName, function(err, results) {
         if( err ) {
             res.json({
                 "code": 400,
                 "failed": true,
-                "message": "Couldn't make query to get chores from household_chores"
+                "message": "Couldn't make query to get current household from users"
             });
-            console.log("chores fuck me");
         }
-        else {
-            res.json({
-                "chores": results,
+        else{
+            var getChores = 'SELECT * from ' + results[0].houseName + "_chores";
+            connection.query(getChores, function(err, results) {
+                if( err ) {
+                    res.json({
+                        "code": 400,
+                        "failed": true,
+                        "message": "Couldn't make query to get chores"
+                    }); 
+                }
+                else {
+                    res.json({
+                        "chores": results,
+                    })
+                    console.log(results);
+                }
             })
-            console.log(results);
         }
     })
 })
 
 router.post('/chores', function(req,res){
-
+    var getHouseName = 'SELECT houseName from household where uniqueID=' + "\"" + req.user.householdID + "\"";
+    connection.query(getHouseName, function(err, results) {
+        if( err ) {
+            res.json({
+                "code": 400,
+                "failed": true,
+                "message": "Couldn't make query to get current household from users"
+            });
+        }
+        else {
+            const chore = [req.body.choresID, req.body.done];
+            var insertChore = "INSERT INTO " + results[0].houseName + "_chores(chores, done) VALUES(?, ?)";
+            connection.query(insertChore, chore, function(err, results){
+                if(err) {
+                    res.json({
+                        "code": 400,
+                        "failed": true,
+                        "message": "Can't enter the chore" 
+                    })
+                }
+                else{
+                    res.json({
+                        'code': 200,
+                        'failed': false,
+                        'message': 'Chores table updated correctly with new chore' 
+                    })
+                }
+            })
+        }
+    })
 })
 
 router.get('/housemates', function(req, res) {
@@ -428,7 +468,6 @@ router.get('/parking', function(req, res) {
                 else {
                     res.json({
                         "parking": results,
-                        "length": results.length,
                     })
                     console.log(results);
                 }

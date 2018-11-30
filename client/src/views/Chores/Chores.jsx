@@ -12,6 +12,16 @@ class Chores extends React.Component {
         axios.post('/chores', constants);
     }
 
+    getChores(){
+        axios.get('/chores')
+        .then( res => {
+
+        })
+        .catch( err => {
+            throw err;
+        })
+    }
+
     handleOnChange(event){
         console.log(event.target.value);
         this.setState({ value: event.target.value });

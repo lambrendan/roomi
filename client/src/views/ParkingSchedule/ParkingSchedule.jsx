@@ -9,11 +9,13 @@ class ParkingSchedule extends React.Component {
         this.state = {
             value: '',
             housemates: '',
-            parkingSpots: ''
+            parkingSpots: '',
+            data: '',
+
         };
         this.handleOnClick = this.handleOnClick.bind(this);
         this.handleOnChange = this.handleOnChange.bind(this);
-        //this.componentDidMount = this.componentDidMount.bind(this);
+        this.componentDidMount = this.componentDidMount.bind(this);
     }
     handleOnClick(){
         var parkingSpot = {
@@ -34,41 +36,34 @@ class ParkingSchedule extends React.Component {
         })
         document.getElementById('parkingInput').value = '';
     }
-
     handleOnChange(event){
         console.log(event.target.value);
         this.setState({ value: event.target.value });
     }
 
-    getHousemates(){
-        axios.get("/housemates")
-        .then( res => {
-            let i = 0;
-            let housemates = [];
-            while(i < res.data.housemates.length) {
-                housemates.push(res.data.housemates[i].housemate);
-                i+=1;
-            }
-            this.setState({ housemates: housemates });
-        })
-        .catch( err => {
-            throw err;
-        })
+    componentDidMount() {
+        console.log("fuck");
+        this.getParkingSpots();
+        console.log(this.state.housemates);
     }
 
     getParkingSpots() {
         axios.get('/parking')
         .then( res => {
-            var i = 0;
+            let i = 0;
             let parkingSpots = [];
             let houseMates = [];
-            console.log(res.data.length);
-            const { parkingSpot } = res.data.parking[i];
-            const { housemate } = res.data.housemate[i];
-            console.log(parkingSpot);
-            console.log(housemate);
-            parkingSpots.push(parkingSpot);
-            houseMates.push(housemate);
+            console.log(res.data.parking);
+            let length = res.data.parking.length;
+            while(i < length) {
+                const { parkingSpot } = res.data.parking[i];
+                const { housemate } = res.data.housemate[i];
+                console.log(parkingSpot);
+                console.log(housemate);
+                parkingSpots.push(parkingSpot);
+                houseMates.push(housemate);
+                i+=1;
+            }
             this.setState({ housemates: houseMates });
             this.setState({ parkingSpots: parkingSpots });
             console.log(houseMates);
@@ -79,10 +74,10 @@ class ParkingSchedule extends React.Component {
     }
 
     render() {
-        this.getHousemates();
+        console.log(this.state.housemates);
         let task = [ "dishes", "vaccum", "trash"];
         let assignee = ["Bob", "Rob", "Mike"]
-        let heading = ["Parking Spot", "Assignee"];
+        let heading = ["Parking Spot", "", "Assignee"];
         return(
             <div>
                 <RoomiTable data={task} heading={heading} assignee={assignee} />

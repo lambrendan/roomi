@@ -16,7 +16,10 @@ export class RoomiTable extends React.Component {
            let row = (
                 <tr>
                     <td>{data[index]}</td>
+                    <Button onClick={this.handleOnClickDelete}>Delete</Button>
                     <td>{assignee[index]}</td>
+                    <Button onClick={this.handleOnClickDelete}>Delete</Button>
+                    
                 </tr>
                );
             row_list.push(row);
