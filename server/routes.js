@@ -226,4 +226,25 @@ router.post('/logout', function(req,res) {
     }
 })
 
+router.get('/chores', function(req,res) {
+    var getChores = ""
+})
+
+router.get('/housemates', function(req, res) {
+    var getCurrentHouse = 'SELECT householdId from users WHERE email=' + "\"" + req.user.email + "\"";
+    connection.query(getCurrentHouse, function(err, results) {
+        if( err ) {
+            res.json({
+                "code": 400,
+                "failed": true,
+                "message": "Couldn't make query to get current household from users"
+            });
+            console.log("fuck me");
+        }
+        else {
+            console.log(results);
+        }
+    })
+})
+
 module.exports = router;
