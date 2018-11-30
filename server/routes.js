@@ -315,12 +315,28 @@ router.post('/logout', function(req,res) {
 })
 
 router.get('/chores', function(req,res) {
-    var getChores = ""
+    var getChores = 'SELECT chores from ' + "\"" + req.user.householdName + "\"" + '_chores';
+    connection.query(getChores, function(err, results) {
+        if( err ) {
+            res.json({
+                "code": 400,
+                "failed": true,
+                "message": "Couldn't make query to get chores from household_chores"
+            });
+            console.log("chores fuck me");
+        }
+        else {
+            res.json({
+                "chores": results,
+            })
+            console.log(results);
+        }
+    })
 })
 
 router.get('/housemates', function(req, res) {
     console.log(req.user.householdID);
-    var getHousemates = 'SELECT firstName from users WHERE householdID=' + "\"" + req.user.householdID + "\"";
+    var getHousemates = 'SELECT firstName from ' + "\"" + req.user.householdName + "\"" + '_chores';
     connection.query(getHousemates, function(err, results) {
         if( err ) {
             res.json({
@@ -328,7 +344,7 @@ router.get('/housemates', function(req, res) {
                 "failed": true,
                 "message": "Couldn't make query to get current household from users"
             });
-            console.log("fuck me");
+            console.log("housemates fuck me");
         }
         else {
             res.json({
