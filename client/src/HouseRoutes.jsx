@@ -18,7 +18,8 @@ class HouseRoutes extends Component {
                 if(prop.redirect) {
                   return <Redirect from={prop.from} to={prop.to} key = {key} />
                 }
-                return <Route path={prop.path} component={prop.component} key={key} />;
+                return <Route path={prop.path} render={(props) => (<prop.component {...this.props} />)}
+                key={key} />;
             })}
         </Switch>
       </div>

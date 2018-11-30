@@ -1,8 +1,29 @@
 import React, { Component } from "react";
 import { NavItem, Nav, NavDropdown, MenuItem } from "react-bootstrap";
+import axios from "axios";
+import { withRouter } from 'react-router-dom'
 
 class HeaderLinks extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      isLoggedIn: true
+    }
+  }
+
+  onClickLogout = () => {
+    axios.post("/logout")
+    .then( res=> {
+      this.props.updateUser(false);
+      this.props.history.push("/")
+    })
+    .catch( err=> {
+      throw err;
+    })
+  }
+
   render() {
+    console.log(this.props)
     const notification = (
       <div>
         <i className="fa fa-globe" />
@@ -36,9 +57,6 @@ class HeaderLinks extends Component {
           </NavItem>
         </Nav>
         <Nav pullRight>
-          <NavItem eventKey={1} href="#">
-            Account
-          </NavItem>
           <NavDropdown
             eventKey={2}
             title="Dropdown"
@@ -52,7 +70,7 @@ class HeaderLinks extends Component {
             <MenuItem divider />
             <MenuItem eventKey={2.5}>Separated link</MenuItem>
           </NavDropdown>
-          <NavItem eventKey={3} href="#">
+          <NavItem eventKey={3} onClick={this.onClickLogout}>
             Log out
           </NavItem>
         </Nav>
@@ -61,4 +79,4 @@ class HeaderLinks extends Component {
   }
 }
 
-export default HeaderLinks;
+export default withRouter(HeaderLinks);
