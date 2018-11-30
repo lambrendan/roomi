@@ -127,7 +127,7 @@ router.post('/newHouse', function(req,res) {
                                                 })
                                             }
                                             else {
-                                                var createparkingTable = "CREATE TABLE " + household.parking + " (parking VARCHAR(255))" ;
+                                                var createparkingTable = "CREATE TABLE " + household.parking + " (parkingSpot VARCHAR(255), housemate VARCHAR(255))" ;
                                                 connection.query(createparkingTable, function(err, results) {
                                                     if( err ) {
                                                         res.json({
@@ -147,7 +147,7 @@ router.post('/newHouse', function(req,res) {
                                                                 })
                                                             }
                                                             else {
-                                                                var createchoresTable = "CREATE TABLE " + household.chores + " (chores VARCHAR(255))" ;
+                                                                var createchoresTable = "CREATE TABLE " + household.chores + " (chore VARCHAR(255), housemate VARCHAR(255))" ;
                                                                 connection.query(createchoresTable, function(err, results) {
                                                                     if( err ) {
                                                                         res.json({
