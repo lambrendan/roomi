@@ -16,6 +16,7 @@ class BillsAndPayments extends React.Component {
         this.handleBillNameChange = this.handleBillNameChange.bind(this);
         this.handleBillAmountChange = this.handleBillAmountChange.bind(this);
         this.handleBillDueDateChange = this.handleBillDueDateChange.bind(this);
+        this.handleBillPayerChange = this.handleBillPayerChange.bind(this);
 
         this.handleBillDeletion = this.handleBillDeletion.bind(this);
 
@@ -23,15 +24,15 @@ class BillsAndPayments extends React.Component {
 
         this.handleResetBills = this.handleResetBills.bind(this);
 
-        const billArr = [ {name: "one", amount: "30", dueDate: "10/20", paid: false, recurring: true,},
-                        {name: "two", amount: "30", dueDate: "10/20", paid: false, recurring: false,},
-                        {name: "three", amount: "30", dueDate: "10/20", paid: false, recurring: true,},
-                        {name: "four", amount: "30", dueDate: "10/20", paid: false, recurring: false,},
-                        {name: "five", amount: "30", dueDate: "10/20", paid: false, recurring: false,},
-                        {name: "six", amount: "30", dueDate: "10/20", paid: true, recurring: false,},
-                        {name: "seven", amount: "30", dueDate: "10/20", paid: true, recurring: true,},
-                        {name: "eight", amount: "20", dueDate: "11/10", paid: true, recurring: false,},
-                        {name: "nine", amount: "20", dueDate: "11/10", paid: true, recurring: false,},
+        const billArr = [ {name: "one", amount: "30", dueDate: "10/20", paid: false, payer: "John", },
+                        {name: "two", amount: "30", dueDate: "10/20", paid: false, payer: "John",},
+                        {name: "three", amount: "30", dueDate: "10/20", paid: false,payer: "Adam",},
+                        {name: "four", amount: "30", dueDate: "10/20", paid: false, payer: "John",},
+                        {name: "five", amount: "30", dueDate: "10/20", paid: false, payer: "Adam",},
+                        {name: "six", amount: "30", dueDate: "10/20", paid: true, payer: "Evan",},
+                        {name: "seven", amount: "30", dueDate: "10/20", paid: true,payer: "John",},
+                        {name: "eight", amount: "20", dueDate: "11/10", paid: true,payer: "John",},
+                        {name: "nine", amount: "20", dueDate: "11/10", paid: true, payer: "John",},
                         ];
         this.state = {
             myBillArr: billArr,
@@ -40,6 +41,7 @@ class BillsAndPayments extends React.Component {
             formBillName: '',
             formBillAmount: '',
             formBillDueDate: '',
+            formBillPayer: '',
         };
 
     }
@@ -55,14 +57,17 @@ class BillsAndPayments extends React.Component {
         const billName = this.state.formBillName;
         const billAmount = this.state.formBillAmount;
         const billDueDate = this.state.formBillDueDate;
-        const billEntry = { name: billName, amount: billAmount, dueDate: billDueDate, paid: false };
+        const billPayer = this.state.formBillPayer;
+        const billEntry = { name: billName, amount: billAmount, dueDate: billDueDate, paid: false, payer: billPayer};
 
         let billArr = this.state.myBillArr;
         billArr.push(billEntry);
         this.setState({myBillArr: billArr,
             formBillName: '',
             formBillAmount: '',
-            formBillDueDate: '',});
+            formBillDueDate: '',
+            formBillPayer: '',
+        });
         this.handleHideModal();
     }
 
@@ -76,6 +81,10 @@ class BillsAndPayments extends React.Component {
 
     handleBillDueDateChange(e) {
         this.setState({ formBillDueDate: e.target.value });
+    }
+
+    handleBillPayerChange(e) {
+        this.setState({ formBillPayer: e.target.value });
     }
 
     handleBillDeletion(e) {
@@ -153,6 +162,7 @@ class BillsAndPayments extends React.Component {
                                         <th>Name</th>
                                         <th>Amount</th>
                                         <th>Due Date</th>
+                                        <th>Payer</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -163,6 +173,7 @@ class BillsAndPayments extends React.Component {
                                                     <td>{bill.name}</td>
                                                     <td>{bill.amount}</td>
                                                     <td>{bill.dueDate}</td>
+                                                    <td>{bill.payer}</td>
                                                 </tr>
                                             );
                                         }
@@ -189,6 +200,7 @@ class BillsAndPayments extends React.Component {
                                                     <td>{bill.name}</td>
                                                     <td>{bill.amount}</td>
                                                     <td>{bill.dueDate}</td>
+                                                    <td>{bill.payer}</td>
                                                 </tr>
                                             );
                                         }
@@ -234,6 +246,13 @@ class BillsAndPayments extends React.Component {
                                             placeholder="Enter Bill Name"
                                             onChange={this.handleBillDueDateChange}
                                         />
+                                        <ControlLabel>Bill Payer</ControlLabel>
+                                        <FormControl
+                                            type="text"
+                                            value={this.state.formBillPayer}
+                                            placeholder="Enter Bill Payer"
+                                            onChange={this.handleBillPayerChange}
+                                        />
                                     </FormGroup>
                                 </form>
                                 </div>
@@ -242,37 +261,6 @@ class BillsAndPayments extends React.Component {
                                 <Button onClick={this.addBill}>Submit</Button>
                             </Modal.Footer>
                         </Modal>
-
-                    </Tab>
-                    <Tab eventKey={2} title="RECURRING">
-                        <div className="customTable">
-                            <Table bordered>
-                                <thead>
-                                    <tr>
-                                        <th>Name</th>
-                                        <th>Amount</th>
-                                        <th>Due Date</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                {this.state.myBillArr.map((bill, index) => {
-                                        if(bill.recurring === true) {
-                                            return (
-                                                <tr key={index}>
-                                                    <td>{bill.name}</td>
-                                                    <td>{bill.amount}</td>
-                                                    <td>{bill.dueDate}</td>
-                                                </tr>
-                                            );
-                                        }
-                                    })
-                                    }
-                                </tbody>
-                            </Table>
-                        </div>
-                    </Tab>
-                    <Tab eventKey={3} title="YOUR HOUSEHOLD">
-                        Table holding this Household's payments.
                     </Tab>
                 </Tabs>
             </div>
