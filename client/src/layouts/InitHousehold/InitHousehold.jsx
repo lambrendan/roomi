@@ -27,6 +27,7 @@ class InitHousehold extends Component {
             }
             axios.post("/newHouse", constants)
             .then( (res) => {
+                console.log(res);
                 if(res.data.failed === false) {
                     this.props.updateHousehold(true);
                     this.props.history.push('/dashboard')

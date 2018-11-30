@@ -72,7 +72,7 @@ router.post('/newHouse', function(req,res) {
         'rules': uniqueID+"-rules",
         'chores': uniqueID+"-chores",
         'shopping': uniqueID+'-shopping',
-        'polls': polls+'-polls'
+        'polls': uniqueID+'-polls'
 
     } 
     var insertDB = 'INSERT INTO household SET ?';
@@ -319,8 +319,9 @@ router.get('/chores', function(req,res) {
 })
 
 router.get('/housemates', function(req, res) {
-    var getCurrentHouse = 'SELECT householdId from users WHERE email=' + "\"" + req.user.email + "\"";
-    connection.query(getCurrentHouse, function(err, results) {
+    console.log(req.user.householdID);
+    var getHousemates = 'SELECT firstName from users WHERE householdID=' + "\"" + req.user.householdID + "\"";
+    connection.query(getHousemates, function(err, results) {
         if( err ) {
             res.json({
                 "code": 400,
@@ -330,6 +331,9 @@ router.get('/housemates', function(req, res) {
             console.log("fuck me");
         }
         else {
+            res.json({
+                "housemates": results,
+            })
             console.log(results);
         }
     })
