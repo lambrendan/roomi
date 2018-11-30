@@ -17,7 +17,6 @@ class BillsAndPayments extends React.Component {
         this.handleBillAmountChange = this.handleBillAmountChange.bind(this);
         this.handleBillDueDateChange = this.handleBillDueDateChange.bind(this);
 
-        this.deleteBill = this.deleteBill.bind(this);
         this.handleBillDeletion = this.handleBillDeletion.bind(this);
 
         this.handleBillPayment = this.handleBillPayment.bind(this);
@@ -65,11 +64,6 @@ class BillsAndPayments extends React.Component {
             formBillAmount: '',
             formBillDueDate: '',});
         this.handleHideModal();
-    }
-
-    deleteBill() {
-        console.log('deletebill');
-        this.handleHideDeleteModal();
     }
 
     handleBillNameChange(e) {
