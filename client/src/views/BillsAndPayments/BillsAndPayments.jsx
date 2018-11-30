@@ -3,8 +3,6 @@ import ReactDOM from 'react-dom';
 import { Tabs, Tab, Table, Panel, Button, Modal, form,
      FormGroup,FormControl, ControlLabel, ButtonGroup, ListGroup,
      DropdownButton, MenuItem, ListGroupItem } from 'react-bootstrap'
-import Sidebar from '../../components/Sidebar/Sidebar';
-import Bill from '../../components/BillsAndPayments/Bill';
 import './BillsAndPayments.css';
 
 
@@ -24,15 +22,17 @@ class BillsAndPayments extends React.Component {
 
         this.handleBillPayment = this.handleBillPayment.bind(this);
 
-        const billArr = [ {name: "one", amount: "30", dueDate: "10/20", paid: false,},
-                        {name: "two", amount: "30", dueDate: "10/20", paid: false,},
-                        {name: "three", amount: "30", dueDate: "10/20", paid: false,},
-                        {name: "four", amount: "30", dueDate: "10/20", paid: false,},
-                        {name: "five", amount: "30", dueDate: "10/20", paid: false,},
-                        {name: "six", amount: "30", dueDate: "10/20", paid: true,},
-                        {name: "seven", amount: "30", dueDate: "10/20", paid: true,},
-                        {name: "eight", amount: "20", dueDate: "11/10", paid: true,},
-                        {name: "nine", amount: "20", dueDate: "11/10", paid: true,},
+        this.handleResetBills = this.handleResetBills.bind(this);
+
+        const billArr = [ {name: "one", amount: "30", dueDate: "10/20", paid: false, recurring: true,},
+                        {name: "two", amount: "30", dueDate: "10/20", paid: false, recurring: false,},
+                        {name: "three", amount: "30", dueDate: "10/20", paid: false, recurring: true,},
+                        {name: "four", amount: "30", dueDate: "10/20", paid: false, recurring: false,},
+                        {name: "five", amount: "30", dueDate: "10/20", paid: false, recurring: false,},
+                        {name: "six", amount: "30", dueDate: "10/20", paid: true, recurring: false,},
+                        {name: "seven", amount: "30", dueDate: "10/20", paid: true, recurring: true,},
+                        {name: "eight", amount: "20", dueDate: "11/10", paid: true, recurring: false,},
+                        {name: "nine", amount: "20", dueDate: "11/10", paid: true, recurring: false,},
                         ];
         this.state = {
             myBillArr: billArr,
@@ -125,6 +125,14 @@ class BillsAndPayments extends React.Component {
 
     }
 
+    handleResetBills(e) {
+        let tempArr = this.state.myBillArr;
+        for(let i = 0; i < tempArr.length; ++i) {
+            tempArr[i].paid = false;
+        }
+        this.setState({myBillArr: tempArr});
+    }
+
 
     render() {
         return(
@@ -149,6 +157,7 @@ class BillsAndPayments extends React.Component {
                                         })}
                                         
                                     </DropdownButton>
+                                    <Button bsSize="large" onClick={this.handleResetBills}>Reset Bills</Button>
                                 </ButtonGroup>
                             </div>
                             <Table responsive bordered>
@@ -255,7 +264,7 @@ class BillsAndPayments extends React.Component {
                     </Tab>
                     <Tab eventKey={2} title="RECURRING">
                         <div className="customTable">
-                            <Table bordered striped>
+                            <Table bordered>
                                 <thead>
                                     <tr>
                                         <th>Name</th>
@@ -264,7 +273,18 @@ class BillsAndPayments extends React.Component {
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {this.state.myBillArr.map(this.renderBill)}
+                                {this.state.myBillArr.map((bill, index) => {
+                                        if(bill.recurring === true) {
+                                            return (
+                                                <tr key={index}>
+                                                    <td>{bill.name}</td>
+                                                    <td>{bill.amount}</td>
+                                                    <td>{bill.dueDate}</td>
+                                                </tr>
+                                            );
+                                        }
+                                    })
+                                    }
                                 </tbody>
                             </Table>
                         </div>
