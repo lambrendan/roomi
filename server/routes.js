@@ -371,8 +371,42 @@ router.get('/chores', function(req,res) {
     })
 })
 
+router.post('/chores', function(req,res){
+
+})
+
 router.get('/housemates', function(req, res) {
-    console.log(req.user.householdID);
+    var getHouseName = 'SELECT houseName from household where uniqueID=' + "\"" + req.user.householdID + "\"";
+    connection.query(getHouseName, function(err, results) {
+        if( err ) {
+            res.json({
+                "code": 400,
+                "failed": true,
+                "message": "Couldn't make query to get current household from users"
+            });
+        }
+        else {
+            var getHousemates = 'SELECT * from ' + results[0].houseName + "_housemate";
+            connection.query(getHousemates, function(err,results){
+                if( err ) {
+                    res.json({
+                        "code": 400,
+                        "failed": true,
+                        "message": "Couldn't make query to get current housemates from household_user"
+                    });
+                }
+                else{
+                    res.json({
+                        "housemates": results,
+                    })
+                }
+            })
+        }
+    })
+})
+
+router.get('/parking', function(req, res) {
+    console.log(req.user.householdName);
     var getHousemates = 'SELECT firstName from ' + "\"" + req.user.householdName + "\"" + '_chores';
     connection.query(getHousemates, function(err, results) {
         if( err ) {
@@ -391,5 +425,41 @@ router.get('/housemates', function(req, res) {
         }
     })
 })
+
+router.post('/parking', function(req, res) {
+    var getHouseName = 'SELECT houseName from household where uniqueID=' + "\"" + req.user.householdID + "\"";
+    connection.query(getHouseName, function(err, results) {
+        if( err ) {
+            res.json({
+                "code": 400,
+                "failed": true,
+                "message": "Couldn't make query to get current household from users"
+            });
+        }
+        else {
+            const parkingID = req.body.parkingID;
+            const housemate = req.body.housemate;
+            console.log(parkingID);
+            var insertParkingSpot = "INSERT INTO " + results[0].houseName + "_parking VALUES (?, ?)";
+            connection.query(insertParkingSpot, parkingID, housemate, function(err, results){
+                if(err) {
+                    res.json({
+                        "code": 400,
+                        "failed": true,
+                        "message": "Can't enter the parking spot" 
+                    })
+                }
+                else{
+                    res.json({
+                        'code': 200,
+                        'failed': false,
+                        'message': 'Parking table updated correctly with parking spot' 
+                    })
+                }
+            })
+        }
+    })
+})
+
 
 module.exports = router;
