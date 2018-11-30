@@ -406,22 +406,33 @@ router.get('/housemates', function(req, res) {
 })
 
 router.get('/parking', function(req, res) {
-    console.log(req.user.householdName);
-    var getHousemates = 'SELECT firstName from ' + "\"" + req.user.householdName + "\"" + '_chores';
-    connection.query(getHousemates, function(err, results) {
+    var getHouseName = 'SELECT houseName from household where uniqueID=' + "\"" + req.user.householdID + "\"";
+    connection.query(getHouseName, function(err, results) {
         if( err ) {
             res.json({
                 "code": 400,
                 "failed": true,
                 "message": "Couldn't make query to get current household from users"
             });
-            console.log("housemates fuck me");
         }
-        else {
-            res.json({
-                "housemates": results,
+        else{
+            var getParkingSpots = 'SELECT * from ' + results[0].houseName + "_parking";
+            connection.query(getParkingSpots, function(err, results) {
+                if( err ) {
+                    res.json({
+                        "code": 400,
+                        "failed": true,
+                        "message": "Couldn't make query to get parking spots"
+                    }); 
+                }
+                else {
+                    res.json({
+                        "parking": results,
+                        "length": results.length,
+                    })
+                    console.log(results);
+                }
             })
-            console.log(results);
         }
     })
 })
@@ -437,11 +448,9 @@ router.post('/parking', function(req, res) {
             });
         }
         else {
-            const parkingID = req.body.parkingID;
-            const housemate = req.body.housemate;
-            console.log(parkingID);
-            var insertParkingSpot = "INSERT INTO " + results[0].houseName + "_parking VALUES (?, ?)";
-            connection.query(insertParkingSpot, parkingID, housemate, function(err, results){
+            const parking = [req.body.parkingID, req.body.housemate];
+            var insertParkingSpot = "INSERT INTO " + results[0].houseName + "_parking(parkingSpot, housemate) VALUES(?, ?)";
+            connection.query(insertParkingSpot, parking, function(err, results){
                 if(err) {
                     res.json({
                         "code": 400,

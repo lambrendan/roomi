@@ -13,6 +13,7 @@ class ParkingSchedule extends React.Component {
         };
         this.handleOnClick = this.handleOnClick.bind(this);
         this.handleOnChange = this.handleOnChange.bind(this);
+        //this.componentDidMount = this.componentDidMount.bind(this);
     }
     handleOnClick(){
         var parkingSpot = {
@@ -33,28 +34,12 @@ class ParkingSchedule extends React.Component {
         })
         document.getElementById('parkingInput').value = '';
     }
+
     handleOnChange(event){
         console.log(event.target.value);
         this.setState({ value: event.target.value });
     }
 
-    getParkingSpots() {
-        axios.get('/parking')
-        .then( res => {
-            console.log("success");
-            console.log(res.data.housemates);
-            let i = 0;
-            let parkingSpots = [];
-            while(i < res.data.parkingSpots.length) {
-                i+=1;
-            }
-            //this.setState({ housemates: res.data.housemates });
-        })
-        .catch( err => {
-            throw err;
-        })
-    }
-    
     getHousemates(){
         axios.get("/housemates")
         .then( res => {
@@ -70,13 +55,37 @@ class ParkingSchedule extends React.Component {
             throw err;
         })
     }
+
+    getParkingSpots() {
+        axios.get('/parking')
+        .then( res => {
+            var i = 0;
+            let parkingSpots = [];
+            let houseMates = [];
+            console.log(res.data.length);
+            const { parkingSpot } = res.data.parking[i];
+            const { housemate } = res.data.housemate[i];
+            console.log(parkingSpot);
+            console.log(housemate);
+            parkingSpots.push(parkingSpot);
+            houseMates.push(housemate);
+            this.setState({ housemates: houseMates });
+            this.setState({ parkingSpots: parkingSpots });
+            console.log(houseMates);
+        })
+        .catch( err => {
+            throw err;
+        })
+    }
+
     render() {
-        let parking = [ "P20", "P21", "P23"];
-        //this.getHousemates();
+        this.getHousemates();
+        let task = [ "dishes", "vaccum", "trash"];
+        let assignee = ["Bob", "Rob", "Mike"]
         let heading = ["Parking Spot", "Assignee"];
         return(
             <div>
-                <RoomiTable data={parking} heading={heading} assignee={this.state.housemates} hasButtons={true}/>
+                <RoomiTable data={task} heading={heading} assignee={assignee} />
                 <input type="text" onChange={this.handleOnChange} id="parkingInput"/>
                 <Button onClick={this.handleOnClick}>Add Parking Spot</Button>
             </div>
