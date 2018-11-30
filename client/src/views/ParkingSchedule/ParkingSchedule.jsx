@@ -6,30 +6,65 @@ import axios from "axios";
 class ParkingSchedule extends React.Component {
     constructor(props){
         super(props);
-        this.state = {value: '',
-            housemates: ''};
+        this.state = {
+            value: '',
+            housemates: '',
+            parkingSpots: ''
+        };
         this.handleOnClick = this.handleOnClick.bind(this);
         this.handleOnChange = this.handleOnChange.bind(this);
     }
     handleOnClick(){
+        var parkingSpot = {
+            'parkingID': this.state.value,
+            'housemate': null,
+        }
+        axios.post('/parking', parkingSpot)
+        .then( res => {
+            if(res.data.failed === false) {
+                console.log("success");
+            }
+            else{
+                console.log("failed");
+            }
+        })
+        .catch( err => {
+            throw err;
+        })
         document.getElementById('parkingInput').value = '';
     }
     handleOnChange(event){
         console.log(event.target.value);
         this.setState({ value: event.target.value });
     }
+
     getParkingSpots() {
-        axios.get('')
+        axios.get('/parking')
+        .then( res => {
+            console.log("success");
+            console.log(res.data.housemates);
+            let i = 0;
+            let parkingSpots = [];
+            while(i < res.data.parkingSpots.length) {
+                i+=1;
+            }
+            //this.setState({ housemates: res.data.housemates });
+        })
+        .catch( err => {
+            throw err;
+        })
     }
     
     getHousemates(){
         axios.get("/housemates")
         .then( res => {
-            console.log("success");
-            console.log(res.data.housemates);
-            const { housemates } = res.data.housemates
-            console.log(housemates);
-            //this.setState({ housemates: res.data.housemates });
+            let i = 0;
+            let housemates = [];
+            while(i < res.data.housemates.length) {
+                housemates.push(res.data.housemates[i].housemate);
+                i+=1;
+            }
+            this.setState({ housemates: housemates });
         })
         .catch( err => {
             throw err;
@@ -37,8 +72,7 @@ class ParkingSchedule extends React.Component {
     }
     render() {
         let parking = [ "P20", "P21", "P23"];
-        this.getHousemates();
-        console.log(this.state.housemates);
+        //this.getHousemates();
         let heading = ["Parking Spot", "Assignee"];
         return(
             <div>
