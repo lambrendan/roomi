@@ -238,7 +238,7 @@ class Chores extends React.Component {
                 </tbody>
             </Table>
                 <input type="text" onChange={this.handleOnChange} id="taskInput"/>
-                <Button onClick={this.handleOnClick}>Add Task</Button>
+                <Button onClick={this.handleOnClick} disabled={this.state.value.length === 0 ? true : false}>Add Task</Button>
             </div>
         )
     }

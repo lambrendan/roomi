@@ -724,12 +724,81 @@ router.get('/parking', function(req, res) {
                     res.json({
                         'code': 200,
                         'failed': false,
-                        'message': 'Parking table updated correctly with parking spot' 
+                        'message': 'Parking table updated correctly with parking spot', 
+                        'parking': results,
                     })
                 }
             })
         }
     })
+})
+
+router.post('/parking', function(req, res) {
+    var getHouseName = 'SELECT houseName from household where uniqueID=' + "\"" + req.user.householdID + "\"";
+    connection.query(getHouseName, function(err, results) {
+        if( err ) {
+            res.json({
+                "code": 400,
+                "failed": true,
+                "message": "Couldn't make query to get current household from users"
+            });
+        }
+        else {
+            const parking = [req.body.parkingSpot, req.body.housemate];
+            var insertParkingSpot = "INSERT INTO " + results[0].houseName + "_parking(parkingSpot, housemate) VALUES(?, ?)";
+            connection.query(insertParkingSpot, parking, function(err, results){
+                if(err){
+                    res.json({
+                        "code": 400,
+                        "message": "failed to insert parking",
+                        "failed": true
+                    })
+                }
+                else {
+                    res.json({
+                        "code": 200,
+                        "message": "Successfully inserted parking",
+                        "failed": false
+                    })
+                }
+            })
+        }
+    }) 
+})
+
+router.post('/deleteParking', function(req,res){
+    var getHouse = 'SELECT houseName from household where uniqueID=' + "\"" + req.user.householdID + "\"" 
+    connection.query(getHouse, function(err,results){
+        if(err) {
+            res.json({
+                "code": 400,
+                "failed": true,
+                "message": err
+            })
+        }
+        else {
+            var deleteFromDB = 'DELETE FROM ' + results[0].houseName + '_parking WHERE parkingSpot=' + "\"" + req.body.parkingSpot + "\""; //+"and housemate=" + "\"" + req.body.housemate + "\"" ;
+            connection.query(deleteFromDB, function(err, results) {
+                if( err ) {
+                    res.json({
+                        "code": 400,
+                        "failed": true,
+                        "message": "Could not delete the parking spot from the table"
+                    })
+                }
+                else {
+                    res.json({
+                        "code": 200,
+                        "message": "Successfully deleted the parkingspot",
+                        'parkingSpot': req.body.parkingSpot,
+                        //'assignee': req.body.housemate,
+                        "failed": false
+                    })
+                }
+            })
+        }
+    })
+
 })
 
 router.get('/rules', function(req,res) {
@@ -794,39 +863,6 @@ router.post('/rules', function(req,res) {
             })
         }
     })
-})
-
-router.post('/parking', function(req, res) {
-    var getHouseName = 'SELECT houseName from household where uniqueID=' + "\"" + req.user.householdID + "\"";
-    connection.query(getHouseName, function(err, results) {
-        if( err ) {
-            res.json({
-                "code": 400,
-                "failed": true,
-                "message": "Couldn't make query to get current household from users"
-            });
-        }
-        else {
-            const parking = [req.body.parkingID, req.body.housemate];
-            var insertParkingSpot = "INSERT INTO " + results[0].houseName + "_parking(parkingSpot, housemate) VALUES(?, ?)";
-            connection.query(insertParkingSpot, parking, function(err, results){
-                if(err){
-                    res.json({
-                        "code": 400,
-                        "message": "failed to insert parking",
-                        "failed": true
-                    })
-                }
-                else {
-                    res.json({
-                        "code": 200,
-                        "message": "Successfully inserted parking",
-                        "failed": false
-                    })
-                }
-            })
-        }
-    }) 
 })
 
 router.get('/shopping', function(req,res){
