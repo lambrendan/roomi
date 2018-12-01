@@ -126,7 +126,9 @@ class ParkingSchedule extends React.Component {
         })
     }
     roundRobin(){
+        if(this.state.housemates_with_parking.size < this.state.parkingAssignments.length){
 
+        }
     }
     render() {
         return(
@@ -154,6 +156,7 @@ class ParkingSchedule extends React.Component {
             </Table>
                 <input type="text" onChange={this.handleOnChange} id="parkingInput"/>
                 <Button onClick={this.handleOnClick} disabled={this.state.value.length === 0 ? true : false}>Add Task</Button>
+                <Button onClick={this.roundRobin}>Shuffle Parking Assignments></Button>
             </div>
         )
     }

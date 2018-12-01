@@ -8,10 +8,11 @@ class Chores extends React.Component {
         this.state = {
             value: '',
             chores_assignees: [],
-            housemates: [],
+            housemates: new Set(),
             assignees: [],
             heading: [],
             isDone: [],
+            housemates_with_chores: new Set(),
         };
         this.handleOnClick = this.handleOnClick.bind(this);
         this.handleOnChange = this.handleOnChange.bind(this);
@@ -21,7 +22,7 @@ class Chores extends React.Component {
         axios.get('/housemates')
         .then( res => {
             let housemate_list = res.data.housemates.map(item => item.housemate);
-            this.setState({ housemates: housemate_list});
+            this.setState({ housemates: new Set(housemate_list)});
             //console.log(this.state.housemates);
         })
         .catch( err => {
@@ -32,9 +33,17 @@ class Chores extends React.Component {
     }
 
     handleOnClick(){
+        const housemates = Array.from(this.state.housemates);
+        let housemateToCheck = housemates[Math.floor(Math.random() * housemates.length)];
+        if(this.state.housemates.size !== this.state.housemates_with_chores.size) {
+            //housemateToCheck = housemates[Math.floor(Math.random() * housemates.length)];
+            while(this.state.housemates_with_chores.has(housemateToCheck)){
+                housemateToCheck = housemates[Math.floor(Math.random() * housemates.length)];
+            }
+        }
         var constants = {
             'choresID': this.state.value,
-            'housemate': this.state.housemates[Math.floor(Math.random()*this.state.housemates.length)],
+            'housemate': housemateToCheck,
             'isDone': 0,
         }
         axios.post('/chores', constants)
@@ -74,6 +83,8 @@ class Chores extends React.Component {
                 });
                 //this.setState({ assignees: assignees_list});
                 this.setState({ chores_assignees: chores_assignees_list});
+                var housematesHasChores = chores_assignees_list.map(item => item.housemate);
+                this.setState({ housemates_with_chores: new Set(housematesHasChores)});
                 let isDone = chores_assignees_list.map( item => item.isDone);
                 this.setState({isDone: isDone});
                 console.log(chores_assignees_list);
@@ -108,6 +119,9 @@ class Chores extends React.Component {
                 let tempArr = this.state.chores_assignees;
                 tempArr.splice(ind, 1);
                 this.setState({chores_assignees: tempArr});
+                let tempSet = this.state.housemates_with_chores;
+                tempSet.delete(body.housemate);
+                this.setState({housemates_with_chores: tempSet});
                 let newIsDone = tempArr.map(item => item.isDone);
                 this.setState({isDone: newIsDone});
                 this.mapBackgroundColor();
@@ -178,8 +192,20 @@ class Chores extends React.Component {
             }
         }
         if(count === this.state.isDone.length && this.state.isDone.length != 0){
+            this.setState( {housemates_with_chores: new Set()});
             var newTasks = this.state.chores_assignees.map(item =>{
-                var newAssignee = this.state.housemates[Math.floor(Math.random()*this.state.housemates.length)];
+                const housemates = Array.from(this.state.housemates);
+                let housemateToCheck = housemates[Math.floor(Math.random() * housemates.length)];
+                if(this.state.housemates.size !== this.state.housemates_with_chores.size) {
+                    //housemateToCheck = housemates[Math.floor(Math.random() * housemates.length)];
+                    while(this.state.housemates_with_chores.has(housemateToCheck)){
+                        housemateToCheck = housemates[Math.floor(Math.random() * housemates.length)];
+                    }
+                }
+                var newAssignee = housemateToCheck;
+                let housematesChoresSet = this.state.housemates_with_chores;
+                housematesChoresSet.add(newAssignee);
+                this.setState({ housemates_with_chores: housematesChoresSet});
                 const data = {
                     "task": item.task,
                     "assignee": newAssignee,
