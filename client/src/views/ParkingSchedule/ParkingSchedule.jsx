@@ -57,12 +57,7 @@ class ParkingSchedule extends React.Component {
         })
         this.getParkingSpots();
     }
-    deleteChore(){
-        a
-    }
-    markChoreAsDone(){
 
-    }
     getParkingSpots() {
         axios.get('/parking')
         .then( res => {
@@ -83,11 +78,30 @@ class ParkingSchedule extends React.Component {
         let heading = ["Parking Spot", "", "Assignee"];
         return(
             <div>
-                <RoomiTable data={task} heading={heading} hasButtons={false}/>
-                <input type="text" onChange={this.handleOnChange} id="parkingInput"/>
-                <Button onClick={this.handleOnClick}>Add Parking Spot</Button>
+                <Table bordered> 
+                <thead>
+                    <tr>
+                        {this.headingToColumn()}
+                    </tr>
+                </thead>
+                <tbody>
+                    {this.state.parkingSpots.map((item, i) => {
+                        return (
+                            <tr key={item.parkingSpot+item.housemate}>
+                                <td key={item.parkingSpot} onClick={() => this.markChoreAsDone(item.task, item.assignee)}>{item.parkingSpot}</td>
+                                <td key={item.housemate}>{item.housemate}</td>
+                                <td>
+                                    <Button onClick={ () => this.deleteChore(item.task, item.assignee)}>Delete</Button>
+                                </td>
+                            </tr>
+                        )
+                    })
+                }
+                </tbody>
+            </Table>
+                <input type="text" onChange={this.handleOnChange} id="taskInput"/>
+                <Button onClick={this.handleOnClick}>Add Task</Button>
             </div>
-        )
     }
 }
 

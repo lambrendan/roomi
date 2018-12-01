@@ -352,7 +352,6 @@ router.post('/logout', function(req,res) {
     }
 })
 
-<<<<<<< HEAD
 router.get('/chores', function(req,res) {
     var getHouseName = 'SELECT houseName from household where uniqueID=' + "\"" + req.user.householdID + "\"";
     connection.query(getHouseName, function(err, results) {
@@ -384,6 +383,86 @@ router.get('/chores', function(req,res) {
     })
 })
 
+router.post('/updateChores', function(req, res){
+    var getHouseName = 'SELECT houseName from household where uniqueID=' + "\"" + req.user.householdID + "\"";
+    connection.query(getHouseName, function(err, results) {
+        if( err ) {
+            res.json({
+                "code": 400,
+                "failed": true,
+                "message": "Couldn't make query to get current household from users"
+            });
+        }
+        else {
+            var updateChoreIsDone = 'UPDATE ' + results[0].houseName + '_chores SET isDone=' + req.body.isDone  + " where chore=" + "\"" + req.body.chore + "\"";
+            console.log(updateChoreIsDone);
+            var housename = results[0].houseName;
+            connection.query(updateChoreIsDone,  housename, function(err, results){
+                if( err ) {
+                    res.json({
+                        "code": 400,
+                        "failed": true,
+                        "message": "Couldn't make query to update chore"
+                    });
+                }
+                else {
+                    var updateChoreAssignee = 'UPDATE ' + housename + '_chores SET housemate=' + "\"" + req.body.housemate + "\"" + " where chore=" + "\"" + req.body.chore + "\"";
+                    connection.query(updateChoreAssignee, function(err, results){
+                        if( err ) {
+                            res.json({
+                                "code": 400,
+                                "failed": true,
+                                "message": "Couldn't make query to update chore"
+                            });
+                        }  
+                        else{
+                            res.json({
+                                "code": 200,
+                                "failed": false,
+                                "message": "made query to update chore"
+                            });
+                        }
+                    })
+                }
+            })
+        }
+    })
+})
+
+router.post('/choreIsDone', function(req, res){
+    var getHouseName = 'SELECT houseName from household where uniqueID=' + "\"" + req.user.householdID + "\"";
+    connection.query(getHouseName, function(err, results) {
+        if( err ) {
+            res.json({
+                "code": 400,
+                "failed": true,
+                "message": "Couldn't make query to get current household from users"
+            });
+        }
+        else {
+            var getChoreIsDone = "SELECT isDone from " + results[0].houseName + "_chores where chore=" + "\"" + req.body.chore + "\"" + "and housemate=" + "\"" + req.body.housemate + "\"";
+            console.log(getChoreIsDone);
+            connection.query(getChoreIsDone, function(err, results){
+                if( err ) {
+                    res.json({
+                        "code": 400,
+                        "failed": true,
+                        "message": "Couldn't make query to get if chore is done"
+                    });
+                }
+                else {
+                    res.json({
+                        "code": 200,
+                        "failed": false,
+                        "isDone": results[0].isDone,
+                    });
+                }
+            })
+        }
+    })
+})
+
+
 router.post('/chores', function(req,res){
     var getHouseName = 'SELECT houseName from household where uniqueID=' + "\"" + req.user.householdID + "\"";
     connection.query(getHouseName, function(err, results) {
@@ -396,14 +475,7 @@ router.post('/chores', function(req,res){
         }
         else {
             const chore = [req.body.choresID, req.body.housemate, req.body.isDone];
-            /*const chore = { 
-                'chore': req.body.choresID,
-                'housemate': req.body.housemate,
-                'isDone': req.body.isDone,
-            }*/
-            console.log(typeof(req.body.isDone));
             var insertChore = "INSERT INTO " + results[0].houseName + "_chores(chore, housemate, isDone) VALUES(?, ?, ?)";
-            console.log(insertChore);
             connection.query(insertChore, chore, function(err, results){
                 if(err) {
                     res.json({
@@ -417,7 +489,83 @@ router.post('/chores', function(req,res){
                         'code': 200,
                         'failed': false,
                         'message': 'Chores table updated correctly with new chore' 
-=======
+                    })
+                }
+            })
+        }
+    })
+})
+
+router.post('/deleteChore', function(req,res){
+    var getHouse = 'SELECT houseName from household where uniqueID=' + "\"" + req.user.householdID + "\"" 
+    connection.query(getHouse, function(err,results){
+        if(err) {
+            res.json({
+                "code": 400,
+                "failed": true,
+                "message": err
+            })
+        }
+        else {
+            var deleteFromDB = 'DELETE FROM ' + results[0].houseName + '_chores WHERE chore=' + "\"" + req.body.chore + "\"" +"and housemate=" + "\"" + req.body.housemate + "\"" ;
+            connection.query(deleteFromDB, function(err, results) {
+                if( err ) {
+                    res.json({
+                        "code": 400,
+                        "failed": true,
+                        "message": "Could not delete the chore from the table"
+                    })
+                }
+                else {
+                    res.json({
+                        "code": 200,
+                        "message": "Successfully deleted the chore",
+                        'task': req.body.chore,
+                        'assignee': req.body.housemate,
+                        "failed": false
+                    })
+                }
+            })
+        }
+    })
+
+})
+router.post('/markChore', function(req,res){
+    var getHouse = 'SELECT houseName from household where uniqueID=' + "\"" + req.user.householdID + "\"" 
+    connection.query(getHouse, function(err,results){
+        if(err) {
+            res.json({
+                "code": 400,
+                "failed": true,
+                "message": err
+            })
+        }
+        else {
+            var updateDB = 'UPDATE ' + results[0].houseName + '_chores SET isDone=' + req.body.isDone + ' where chore=' + "\"" + req.body.chore + "\"" +"and housemate=" + "\"" + req.body.housemate + "\"" ;
+            console.log(updateDB)
+            connection.query(updateDB, function(err, results) {
+                if( err ) {
+                    res.json({
+                        "code": 400,
+                        "failed": true,
+                        "message": "Could not mark the chore from the table"
+                    })
+                }
+                else {
+                    res.json({
+                        "code": 200,
+                        "message": "Successfully marked chore as done",
+                        'task': req.body.chore,
+                        'assignee': req.body.housemate,
+                        "failed": false
+                    })
+                }
+            })
+        }
+    })
+
+})
+
 router.get('/bills', function(req,res) {
     var getHouse = 'SELECT houseName from household where uniqueID=' + "\"" + req.user.householdID + "\""
     connection.query(getHouse, function(err,results){
@@ -481,12 +629,10 @@ router.post('/bills', function(req,res) {
                         "code": 200,
                         "message": "Successfully inserted bills",
                         "failed": false
->>>>>>> master
                     })
                 }
             })
         }
-<<<<<<< HEAD
     })
 })
 
@@ -503,7 +649,20 @@ router.get('/housemates', function(req, res) {
         else {
             var getHousemates = 'SELECT * from ' + results[0].houseName + "_housemate";
             connection.query(getHousemates, function(err,results){
-=======
+                if(err) {
+                    res.json({
+                        "code": 400,
+                        "failed": true,
+                        "message": "failed to get housemates"
+                    })
+                }
+                else {
+                    res.json({
+                        "housemates": results,
+                    })
+                }
+            })
+        }         
     }) 
 })
 
@@ -520,19 +679,11 @@ router.post('/deleteBills', function(req,res) {
         else {
             var deleteFromDB = 'DELETE FROM ' + results[0].houseName + '_bills where name=' + "\"" + req.body.name + "\"" ;
             connection.query(deleteFromDB, function(err, results) {
->>>>>>> master
                 if( err ) {
                     res.json({
                         "code": 400,
                         "failed": true,
-<<<<<<< HEAD
-                        "message": "Couldn't make query to get current housemates from household_user"
-                    });
-                }
-                else{
-                    res.json({
-                        "housemates": results,
-=======
+                
                         "message": "Could not delete the bill from the table"
                     })
                 }
@@ -542,12 +693,10 @@ router.post('/deleteBills', function(req,res) {
                         "message": "Successfully deleted the bill",
                         'body': req.body.name,
                         "failed": false
->>>>>>> master
                     })
                 }
             })
         }
-<<<<<<< HEAD
     })
 })
 
@@ -564,8 +713,23 @@ router.get('/parking', function(req, res) {
         else{
             var getParkingSpots = 'SELECT * from ' + results[0].houseName + "_parking";
             connection.query(getParkingSpots, function(err, results) {
-=======
-    }) 
+                if( err ) {
+                    res.json({
+                        "code": 400,
+                        "failed": true,
+                        "message": "Can't enter the parking spot" 
+                    })
+                }
+                else{
+                    res.json({
+                        'code': 200,
+                        'failed': false,
+                        'message': 'Parking table updated correctly with parking spot' 
+                    })
+                }
+            })
+        }
+    })
 })
 
 router.get('/rules', function(req,res) {
@@ -614,12 +778,10 @@ router.post('/rules', function(req,res) {
             } 
             var insertIntoDB = 'INSERT INTO ' + results[0].houseName + '_rules SET ?';
             connection.query(insertIntoDB, rules, function(err, results, fields) {
->>>>>>> master
                 if( err ) {
                     res.json({
                         "code": 400,
                         "failed": true,
-<<<<<<< HEAD
                         "message": "Couldn't make query to get parking spots"
                     }); 
                 }
@@ -648,14 +810,17 @@ router.post('/parking', function(req, res) {
             const parking = [req.body.parkingID, req.body.housemate];
             var insertParkingSpot = "INSERT INTO " + results[0].houseName + "_parking(parkingSpot, housemate) VALUES(?, ?)";
             connection.query(insertParkingSpot, parking, function(err, results){
-=======
-                        "message": "Could not add new rule to the table"
+                if(err){
+                    res.json({
+                        "code": 400,
+                        "message": "failed to insert parking",
+                        "failed": true
                     })
                 }
                 else {
                     res.json({
                         "code": 200,
-                        "message": "Successfully inserted rules",
+                        "message": "Successfully inserted parking",
                         "failed": false
                     })
                 }
@@ -677,28 +842,10 @@ router.get('/shopping', function(req,res){
         else {
             var getShopping = 'SELECT * from ' + results[0].houseName + "_shopping";
             connection.query(getShopping, function(err,results){
->>>>>>> master
                 if(err) {
                     res.json({
                         "code": 400,
                         "failed": true,
-<<<<<<< HEAD
-                        "message": "Can't enter the parking spot" 
-                    })
-                }
-                else{
-                    res.json({
-                        'code': 200,
-                        'failed': false,
-                        'message': 'Parking table updated correctly with parking spot' 
-                    })
-                }
-            })
-        }
-    })
-})
-
-=======
                         "message": err
                     })
                 }
@@ -779,6 +926,5 @@ router.post('/deleteShoppingItem', function(req,res) {
         }
     }) 
 })
->>>>>>> master
 
 module.exports = router;

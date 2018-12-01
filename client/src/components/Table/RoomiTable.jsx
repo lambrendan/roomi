@@ -11,24 +11,26 @@ export class RoomiTable extends React.Component {
         return this.props.data.map((item, i) => {
             return (
                 <tr>
-                    <td key={i}>{item.task}</td>
-                    <td key={i}>{item.assignee}</td>
+                    <td key={"task" + i}>{item.task}</td>
+                    <td key={"assignee" + i}>{item.assignee}</td>
                 </tr>
             )
         });
     }
     //removes an entry
-    handleOnClickDelete(){
-        console.log("Delete")
+    handleOnClickDelete(index){
+        console.log(index);
     }
     //create a row that does have buttons on each row
     dataToRowButton() {
         return this.props.data.map((item, i) => {
             return (
-                <tr>
-                    <td key={i}>{item.task}</td>
-                    <Button onClick={this.handleOnClickDelete}>Delete</Button>
-                    <td key={i}>{item.assignee}</td>
+                <tr key={item.task+item.assignee+i}>
+                    <td>{item.task}</td>
+                    <td>{item.assignee}</td>
+                    <td>
+                        <Button onClick={this.props.delete}>Delete</Button>
+                    </td>
                 </tr>
             )
         });
