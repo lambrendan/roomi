@@ -8,7 +8,7 @@ class ParkingSchedule extends React.Component {
         super(props);
         this.state = {
             value: '',
-            housemates: '',
+            housemates: [],
             parkingSpots: '',
             data: '',
 
@@ -22,6 +22,11 @@ class ParkingSchedule extends React.Component {
             'parkingID': this.state.value,
             'housemate': null,
         }
+        this.addParkingSpots(parkingSpot);
+        document.getElementById('parkingInput').value = '';
+    }
+
+    addParkingSpots(parkingSpot){
         axios.post('/parking', parkingSpot)
         .then( res => {
             if(res.data.failed === false) {
@@ -34,7 +39,6 @@ class ParkingSchedule extends React.Component {
         .catch( err => {
             throw err;
         })
-        document.getElementById('parkingInput').value = '';
     }
     handleOnChange(event){
         console.log(event.target.value);
@@ -42,31 +46,25 @@ class ParkingSchedule extends React.Component {
     }
 
     componentDidMount() {
-        console.log("fuck");
+        axios.get('/housemates')
+        .then( res => {
+            console.log(res.data.housemates);
+            let housemate_list = res.data.housemates.map(item => item.housemate);
+            this.setState({ housemates: housemate_list});
+        })
+        .catch( err => {
+            throw err;
+        })
         this.getParkingSpots();
-        console.log(this.state.housemates);
     }
 
     getParkingSpots() {
         axios.get('/parking')
         .then( res => {
-            let i = 0;
-            let parkingSpots = [];
-            let houseMates = [];
-            console.log(res.data.parking);
-            let length = res.data.parking.length;
-            while(i < length) {
-                const { parkingSpot } = res.data.parking[i];
-                const { housemate } = res.data.housemate[i];
-                console.log(parkingSpot);
-                console.log(housemate);
-                parkingSpots.push(parkingSpot);
-                houseMates.push(housemate);
-                i+=1;
-            }
-            this.setState({ housemates: houseMates });
-            this.setState({ parkingSpots: parkingSpots });
-            console.log(houseMates);
+            var parkingSpots_list = res.data.parking.map(item =>{
+                return item.parkingSpot;
+            })
+            this.setState({ parkingSpots: parkingSpots_list });
         })
         .catch( err => {
             throw err;
@@ -80,7 +78,7 @@ class ParkingSchedule extends React.Component {
         let heading = ["Parking Spot", "", "Assignee"];
         return(
             <div>
-                <RoomiTable data={task} heading={heading} assignee={assignee} />
+                <RoomiTable data={task} heading={heading} hasButtons={false}/>
                 <input type="text" onChange={this.handleOnChange} id="parkingInput"/>
                 <Button onClick={this.handleOnClick}>Add Parking Spot</Button>
             </div>

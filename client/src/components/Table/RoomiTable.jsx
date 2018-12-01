@@ -8,24 +8,14 @@ export class RoomiTable extends React.Component {
     }
     //create a row that does not have buttons on each row
     dataToRow() {
-        var data = this.props.data;
-        var assignee = this.props.assignee;
-        let row_list = []
-        let index = 0;
-        while(index < data.length){
-           let row = (
+        return this.props.data.map((item, i) => {
+            return (
                 <tr>
-                    <td>{data[index]}</td>
-                    <Button onClick={this.handleOnClickDelete}>Delete</Button>
-                    <td>{assignee[index]}</td>
-                    <Button onClick={this.handleOnClickDelete}>Delete</Button>
-                    
+                    <td key={i}>{item.task}</td>
+                    <td key={i}>{item.assignee}</td>
                 </tr>
-               );
-            row_list.push(row);
-            index += 1;
-        }
-        return row_list;
+            )
+        });
     }
     //removes an entry
     handleOnClickDelete(){
@@ -33,28 +23,17 @@ export class RoomiTable extends React.Component {
     }
     //create a row that does have buttons on each row
     dataToRowButton() {
-        var data = this.props.data;
-        var assignee = this.props.assignee;
-        let row_list = []
-        let index = 0;
-        while(index < data.length){
-            let row = (
+        return this.props.data.map((item, i) => {
+            return (
                 <tr>
-                    <td>
-                        {data[index]} 
-                        <Button onClick={this.handleOnClickDelete}>Delete</Button>
-                    </td>
-                    <td>
-                        {assignee[index]}
-                        <Button onClick={this.handleOnClickDelete}>Delete</Button>
-                    </td>
+                    <td key={i}>{item.task}</td>
+                    <Button onClick={this.handleOnClickDelete}>Delete</Button>
+                    <td key={i}>{item.assignee}</td>
                 </tr>
-               );
-            row_list.push(row);
-            index += 1;
-        }
-        return row_list;
+            )
+        });
     }
+
     render() {
         return (
             <Table bordered> 
