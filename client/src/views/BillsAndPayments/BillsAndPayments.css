@@ -4,5 +4,6 @@
 }
 
 .tableButton {
-    margin: 25px;
+    display: flex;
+    justify-content: center;
 }

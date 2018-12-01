@@ -2,6 +2,7 @@ import React from 'react';
 import Sidebar from '../../components/Sidebar/Sidebar';
 import { form, FormGroup, ControlLabel,
     FormControl, Modal, Button, ListGroup, ListGroupItem } from 'react-bootstrap';
+import axios from 'axios';
 
 
 class ShoppingList extends React.Component {
@@ -30,14 +31,39 @@ class ShoppingList extends React.Component {
 
     }
 
+    componentDidMount() {
+        axios.get('/shopping')
+        .then( res=> {
+            this.setState({
+                itemsList: res.data.shopping
+            })
+        })
+        .catch( err=> {
+            throw err;
+        })
+    }
+
     addItem() {
         const itemName = this.state.itemName;
-        const newItem = {name: itemName};
-        const itemArr = this.state.itemsList;
-        itemArr.push(newItem);
-        this.setState({itemsList: itemArr,
-                    itemName: '',});
-        this.handleHideModal();
+        const newItem = {
+            name: itemName
+        };
+        axios.post('/shopping', newItem)
+        .then(res=>{
+            if(res.data.failed === false ) {
+                const itemArr = this.state.itemsList;
+                itemArr.push(newItem);
+                this.setState({
+                    itemsList: itemArr,
+                    itemName: ''
+                });
+                this.handleHideModal();
+            }
+        })
+        .catch(err=>{
+            throw err;
+        })
+        
     }
 
     removeItem(e) {
@@ -69,18 +95,17 @@ class ShoppingList extends React.Component {
     render() {
         return (
             <div className="customTable">
-                <div className = "customButton">
-                    <Button onClick={this.handleShowModal}>Add Item</Button>
-                </div>
                 <ListGroup>
-                    
+                <h2>Items</h2>
                     {this.state.itemsList.map((item, index) => {
                         return(
                             <ListGroupItem onClick={this.removeItem}>{item.name}</ListGroupItem>
                         );
                     })}
+                    <div className = "customButton">
+                        <Button onClick={this.handleShowModal}>Add Item</Button>
+                    </div>
                 </ListGroup>
-
 
                 <Modal
                     show={this.state.showModal}
