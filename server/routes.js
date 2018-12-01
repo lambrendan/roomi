@@ -23,6 +23,7 @@ router.get('/check', function(req,res) {
         })
     }
 })
+
 router.get('/auth', (req,res) => {
     if( req.isAuthenticated()) {
         res.json({ 
@@ -117,7 +118,7 @@ router.post('/newHouse', function(req,res) {
                                         })
                                     }
                                     else {
-                                        var createbillsTable = "CREATE TABLE " + household.bills + " (name VARCHAR(255), amount DECIMAL(19,2), dueDate DATE )" ;
+                                        var createbillsTable = "CREATE TABLE " + household.bills + " (name VARCHAR(255), amount DECIMAL(19,2), dueDate VARCHAR(255), paid TINYINT(1), housemate VARCHAR(255))" ;
                                         connection.query(createbillsTable, function(err, results) {
                                             if( err ) {
                                                 res.json({
@@ -351,6 +352,7 @@ router.post('/logout', function(req,res) {
     }
 })
 
+<<<<<<< HEAD
 router.get('/chores', function(req,res) {
     var getHouseName = 'SELECT houseName from household where uniqueID=' + "\"" + req.user.householdID + "\"";
     connection.query(getHouseName, function(err, results) {
@@ -415,10 +417,76 @@ router.post('/chores', function(req,res){
                         'code': 200,
                         'failed': false,
                         'message': 'Chores table updated correctly with new chore' 
+=======
+router.get('/bills', function(req,res) {
+    var getHouse = 'SELECT houseName from household where uniqueID=' + "\"" + req.user.householdID + "\""
+    connection.query(getHouse, function(err,results){
+        if(err) {
+            res.json({
+                "code": 400,
+                "failed": true,
+                "message": err
+            })
+        }
+        else {
+            var getBills = 'SELECT * from ' + results[0].houseName + "_bills";
+            connection.query(getBills, function(err,results){
+                if(err) {
+                    res.json({
+                        "code": 400,
+                        "failed": true,
+                        "message": err
+                    })
+                }
+                else {
+                    res.json({
+                        'bills': results
+                    })
+                }
+            }) 
+        }
+    }) 
+})
+
+router.post('/bills', function(req,res) {
+    var getHouse = 'SELECT houseName from household where uniqueID=' + "\"" + req.user.householdID + "\"" 
+    connection.query(getHouse, function(err,results){
+        if(err) {
+            res.json({
+                "code": 400,
+                "failed": true,
+                "message": err
+            })
+        }
+        else {
+            const bills = {
+                'name': req.body.name,
+                'amount': req.body.amount,
+                'dueDate': req.body.dueDate,
+                'paid': req.body.paid,
+                'housemate': req.body.housemate
+            } 
+            console.log(bills);
+            var insertIntoDB = 'INSERT INTO ' + results[0].houseName + '_bills SET ?';
+            connection.query(insertIntoDB, bills, function(err, results, fields) {
+                if( err ) {
+                    res.json({
+                        "code": 400,
+                        "failed": true,
+                        "message": "Could not add new bill to the table"
+                    })
+                }
+                else {
+                    res.json({
+                        "code": 200,
+                        "message": "Successfully inserted bills",
+                        "failed": false
+>>>>>>> master
                     })
                 }
             })
         }
+<<<<<<< HEAD
     })
 })
 
@@ -435,20 +503,51 @@ router.get('/housemates', function(req, res) {
         else {
             var getHousemates = 'SELECT * from ' + results[0].houseName + "_housemate";
             connection.query(getHousemates, function(err,results){
+=======
+    }) 
+})
+
+router.post('/deleteBills', function(req,res) {
+    var getHouse = 'SELECT houseName from household where uniqueID=' + "\"" + req.user.householdID + "\"" 
+    connection.query(getHouse, function(err,results){
+        if(err) {
+            res.json({
+                "code": 400,
+                "failed": true,
+                "message": err
+            })
+        }
+        else {
+            var deleteFromDB = 'DELETE FROM ' + results[0].houseName + '_bills where name=' + "\"" + req.body.name + "\"" ;
+            connection.query(deleteFromDB, function(err, results) {
+>>>>>>> master
                 if( err ) {
                     res.json({
                         "code": 400,
                         "failed": true,
+<<<<<<< HEAD
                         "message": "Couldn't make query to get current housemates from household_user"
                     });
                 }
                 else{
                     res.json({
                         "housemates": results,
+=======
+                        "message": "Could not delete the bill from the table"
+                    })
+                }
+                else {
+                    res.json({
+                        "code": 200,
+                        "message": "Successfully deleted the bill",
+                        'body': req.body.name,
+                        "failed": false
+>>>>>>> master
                     })
                 }
             })
         }
+<<<<<<< HEAD
     })
 })
 
@@ -465,10 +564,62 @@ router.get('/parking', function(req, res) {
         else{
             var getParkingSpots = 'SELECT * from ' + results[0].houseName + "_parking";
             connection.query(getParkingSpots, function(err, results) {
+=======
+    }) 
+})
+
+router.get('/rules', function(req,res) {
+    var getHouse = 'SELECT houseName from household where uniqueID=' + "\"" + req.user.householdID + "\"" 
+    connection.query(getHouse, function(err,results){
+        if(err) {
+            res.json({
+                "code": 400,
+                "failed": true,
+                "message": err
+            })
+        }
+        else {
+            var getRules = 'SELECT * from ' + results[0].houseName + "_rules";
+            connection.query(getRules, function(err,results){
+                if(err) {
+                    res.json({
+                        "code": 400,
+                        "failed": true,
+                        "message": err
+                    })
+                }
+                else {
+                    res.json({
+                        'rules': results
+                    })
+                }
+            }) 
+        }
+    }) 
+})
+
+router.post('/rules', function(req,res) {
+    var getHouse = 'SELECT houseName from household where uniqueID=' + "\"" + req.user.householdID + "\"" 
+    connection.query(getHouse, function(err,results){
+        if(err) {
+            res.json({
+                "code": 400,
+                "failed": true,
+                "message": err
+            })
+        }
+        else {
+            const rules = {
+                'rules': req.body.rules
+            } 
+            var insertIntoDB = 'INSERT INTO ' + results[0].houseName + '_rules SET ?';
+            connection.query(insertIntoDB, rules, function(err, results, fields) {
+>>>>>>> master
                 if( err ) {
                     res.json({
                         "code": 400,
                         "failed": true,
+<<<<<<< HEAD
                         "message": "Couldn't make query to get parking spots"
                     }); 
                 }
@@ -497,10 +648,41 @@ router.post('/parking', function(req, res) {
             const parking = [req.body.parkingID, req.body.housemate];
             var insertParkingSpot = "INSERT INTO " + results[0].houseName + "_parking(parkingSpot, housemate) VALUES(?, ?)";
             connection.query(insertParkingSpot, parking, function(err, results){
+=======
+                        "message": "Could not add new rule to the table"
+                    })
+                }
+                else {
+                    res.json({
+                        "code": 200,
+                        "message": "Successfully inserted rules",
+                        "failed": false
+                    })
+                }
+            })
+        }
+    }) 
+})
+
+router.get('/shopping', function(req,res){
+    var getHouse = 'SELECT houseName from household where uniqueID=' + "\"" + req.user.householdID + "\"" 
+    connection.query(getHouse, function(err,results){
+        if(err) {
+            res.json({
+                "code": 400,
+                "failed": true,
+                "message": err
+            })
+        }
+        else {
+            var getShopping = 'SELECT * from ' + results[0].houseName + "_shopping";
+            connection.query(getShopping, function(err,results){
+>>>>>>> master
                 if(err) {
                     res.json({
                         "code": 400,
                         "failed": true,
+<<<<<<< HEAD
                         "message": "Can't enter the parking spot" 
                     })
                 }
@@ -516,5 +698,87 @@ router.post('/parking', function(req, res) {
     })
 })
 
+=======
+                        "message": err
+                    })
+                }
+                else {
+                    res.json({
+                        'shopping': results
+                    })
+                }
+            }) 
+        }
+    }) 
+})
+
+router.post('/shopping', function(req,res) {
+    var getHouse = 'SELECT houseName from household where uniqueID=' + "\"" + req.user.householdID + "\"" 
+    connection.query(getHouse, function(err,results){
+        if(err) {
+            res.json({
+                "code": 400,
+                "failed": true,
+                "message": err
+            })
+        }
+        else {
+            const shoppingList = {
+                'shopping': req.body.name
+            } 
+            var insertIntoDB = 'INSERT INTO ' + results[0].houseName + '_shopping SET ?';
+            connection.query(insertIntoDB, shoppingList, function(err, results, fields) {
+                if( err ) {
+                    res.json({
+                        "code": 400,
+                        "failed": true,
+                        "message": "Could not add new shopping list item to the table"
+                    })
+                }
+                else {
+                    res.json({
+                        "code": 200,
+                        "message": "Successfully inserted shopping list item",
+                        "failed": false
+                    })
+                }
+            })
+        }
+    }) 
+})
+
+router.post('/deleteShoppingItem', function(req,res) {
+    var getHouse = 'SELECT houseName from household where uniqueID=' + "\"" + req.user.householdID + "\"" 
+    connection.query(getHouse, function(err,results){
+        if(err) {
+            res.json({
+                "code": 400,
+                "failed": true,
+                "message": err
+            })
+        }
+        else {
+            var deleteFromDB = 'DELETE FROM ' + results[0].houseName + '_shopping where name=' + "\"" + req.body.item + "\"" ;
+            connection.query(deleteFromDB, function(err, results) {
+                if( err ) {
+                    res.json({
+                        "code": 400,
+                        "failed": true,
+                        "message": "Could not delete the shopping item from the table"
+                    })
+                }
+                else {
+                    res.json({
+                        "code": 200,
+                        "message": "Successfully deleted the shoping item",
+                        'body': req.body.item,
+                        "failed": false
+                    })
+                }
+            })
+        }
+    }) 
+})
+>>>>>>> master
 
 module.exports = router;

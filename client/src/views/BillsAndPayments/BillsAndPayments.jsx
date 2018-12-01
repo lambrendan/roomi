@@ -4,6 +4,7 @@ import { Tabs, Tab, Table, Panel, Button, Modal, form,
      FormGroup,FormControl, ControlLabel, ButtonGroup, ListGroup,
      DropdownButton, MenuItem, ListGroupItem } from 'react-bootstrap'
 import './BillsAndPayments.css';
+import axios from 'axios';
 
 
 
@@ -16,7 +17,7 @@ class BillsAndPayments extends React.Component {
         this.handleBillNameChange = this.handleBillNameChange.bind(this);
         this.handleBillAmountChange = this.handleBillAmountChange.bind(this);
         this.handleBillDueDateChange = this.handleBillDueDateChange.bind(this);
-        this.handleBillPayerChange = this.handleBillPayerChange.bind(this);
+        this.handleBillHousemateChange = this.handleBillHousemateChange.bind(this);
 
         this.handleBillDeletion = this.handleBillDeletion.bind(this);
 
@@ -35,15 +36,27 @@ class BillsAndPayments extends React.Component {
                         {name: "nine", amount: "20", dueDate: "11/10", paid: true, payer: "John",},
                         ];
         this.state = {
-            myBillArr: billArr,
+            myBillArr: [],
             showModal: false,
             showDeleteModal: false,
             formBillName: '',
-            formBillAmount: '',
+            formBillAmount: 0,
             formBillDueDate: '',
-            formBillPayer: '',
+            formBillHousemate: '',
         };
 
+    }
+
+    componentDidMount() {
+        axios.get('/bills')
+        .then( res=> {
+            this.setState({
+                myBillArr: res.data.bills
+            })
+        })
+        .catch( err=> {
+            throw err;
+        })
     }
 
     handleShowModal() {
@@ -57,18 +70,28 @@ class BillsAndPayments extends React.Component {
         const billName = this.state.formBillName;
         const billAmount = this.state.formBillAmount;
         const billDueDate = this.state.formBillDueDate;
-        const billPayer = this.state.formBillPayer;
-        const billEntry = { name: billName, amount: billAmount, dueDate: billDueDate, paid: false, payer: billPayer};
+        const billHousemate = this.state.formBillHousemate;
+        const billEntry = { name: billName, amount: billAmount, dueDate: billDueDate, paid: 0, housemate: billHousemate};
 
-        let billArr = this.state.myBillArr;
-        billArr.push(billEntry);
-        this.setState({myBillArr: billArr,
-            formBillName: '',
-            formBillAmount: '',
-            formBillDueDate: '',
-            formBillPayer: '',
-        });
-        this.handleHideModal();
+        axios.post("/bills", billEntry)
+        .then(res=>{
+            if( res.data.failed === false ) {
+                let billArr = this.state.myBillArr;
+                billArr.push(billEntry);
+                this.setState({myBillArr: billArr,
+                    formBillName: '',
+                    formBillAmount: 0,
+                    formBillDueDate: '',
+                    formBillHousemate: '',
+                });
+                this.handleHideModal();
+            }
+            else {
+            }
+        })
+        .catch( err=> {
+            throw err;
+        })
     }
 
     handleBillNameChange(e) {
@@ -83,23 +106,34 @@ class BillsAndPayments extends React.Component {
         this.setState({ formBillDueDate: e.target.value });
     }
 
-    handleBillPayerChange(e) {
-        this.setState({ formBillPayer: e.target.value });
+    handleBillHousemateChange(e) {
+        this.setState({ formBillHousemate: e.target.value });
     }
 
     handleBillDeletion(e) {
-        let val = null;
-        for(let i of this.state.myBillArr) {
-            if (i.name === e.target.text) {
-                val = i;
-                break;
-            }
+        const body = {
+            name: e.target.text
         }
-        let ind = this.state.myBillArr.indexOf(val);
-        
-        let tempArr = this.state.myBillArr;
-        tempArr.splice(ind, 1);
-        this.setState({myBillArr: tempArr});
+        axios.post('/deleteBills', body)
+        .then( res=> {
+            if( res.data.failed === false ) {
+                let val = null;
+                for(let i of this.state.myBillArr) {
+                    if (i.name === res.body) {
+                        val = i;
+                        break;
+                    }
+                }
+                let ind = this.state.myBillArr.indexOf(val);
+                
+                let tempArr = this.state.myBillArr;
+                tempArr.splice(ind, 1);
+                this.setState({myBillArr: tempArr});
+            }
+        })
+        .catch( err=> {
+            throw err;
+        })
       
     }
 
@@ -112,7 +146,7 @@ class BillsAndPayments extends React.Component {
             }
         }
         let paidArr = this.state.myBillArr;
-        val.paid = true;
+        val.paid = 1;
 
         this.setState({ myBillArr: paidArr });
 
@@ -121,7 +155,7 @@ class BillsAndPayments extends React.Component {
     handleResetBills(e) {
         let tempArr = this.state.myBillArr;
         for(let i = 0; i < tempArr.length; ++i) {
-            tempArr[i].paid = false;
+            tempArr[i].paid = 0;
         }
         this.setState({myBillArr: tempArr});
     }
@@ -130,50 +164,30 @@ class BillsAndPayments extends React.Component {
     render() {
         return(
             <div>
-                <Tabs defaultActiveKey={1}>
+                <Tabs defaultActiveKey={1} id='upperTab'>
                     <Tab eventKey={1} title="THIS MONTH">
                         <div className="customTable">
-                            <div className="tableButton">
-                                <ButtonGroup vertical>
-                                    <Button bsSize="large" onClick={this.handleShowModal} >
-                                        Add Bill
-                                    </Button>
-                                    <DropdownButton bsSize="large" title="Pay Bill">
-                                        {this.state.myBillArr.map((bill, index) => {
-                                            if (bill.paid === false)
-                                                return (<MenuItem key={index} onClick={this.handleBillPayment}>{bill.name}</MenuItem>);
-                                        })}
-                                    </DropdownButton>
-                                    <DropdownButton bsSize="large" title="Remove Bill">
-                                        {this.state.myBillArr.map((bill, index) => {
-                                            return (<MenuItem key={index} onClick={this.handleBillDeletion}>{bill.name}</MenuItem>);
-                                        })}
-                                        
-                                    </DropdownButton>
-                                    <Button bsSize="large" onClick={this.handleResetBills}>Reset Bills</Button>
-                                </ButtonGroup>
-                            </div>
                             <Table responsive bordered>
                                 <thead>
                                     <tr>
-                                        <th colSpan="3">Remaining</th>
+                                        <th colSpan="4">Remaining</th>
                                     </tr>
                                     <tr>
                                         <th>Name</th>
                                         <th>Amount</th>
                                         <th>Due Date</th>
-                                        <th>Payer</th>
+                                        <th>Housemate</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     {this.state.myBillArr.map((bill, index) => {
-                                        if(bill.paid === false) {
+                                        if(bill.paid === 0) {
                                             return (
                                                 <tr key={index}>
                                                     <td>{bill.name}</td>
                                                     <td>{bill.amount}</td>
                                                     <td>{bill.dueDate}</td>
-                                                    <td>{bill.payer}</td>
+                                                    <td>{bill.housemate}</td>
                                                 </tr>
                                             );
                                         }
@@ -184,23 +198,24 @@ class BillsAndPayments extends React.Component {
                             <Table responsive bordered>
                                 <thead>
                                     <tr>
-                                        <th colSpan="3">Paid</th>
+                                        <th colSpan="4">Paid</th>
                                     </tr>
                                     <tr>
                                         <th>Name</th>
                                         <th>Amount</th>
                                         <th>Due Date</th>
+                                        <th>Housemate</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     {this.state.myBillArr.map((bill, index) => {
-                                        if(bill.paid === true) {
+                                        if(bill.paid === 1) {
                                             return (
                                                 <tr key={index}>
                                                     <td>{bill.name}</td>
                                                     <td>{bill.amount}</td>
                                                     <td>{bill.dueDate}</td>
-                                                    <td>{bill.payer}</td>
+                                                    <td>{bill.housemate}</td>
                                                 </tr>
                                             );
                                         }
@@ -246,12 +261,12 @@ class BillsAndPayments extends React.Component {
                                             placeholder="Enter Bill Name"
                                             onChange={this.handleBillDueDateChange}
                                         />
-                                        <ControlLabel>Bill Payer</ControlLabel>
+                                        <ControlLabel>Housemate</ControlLabel>
                                         <FormControl
                                             type="text"
-                                            value={this.state.formBillPayer}
-                                            placeholder="Enter Bill Payer"
-                                            onChange={this.handleBillPayerChange}
+                                            value={this.state.formBillHousemate}
+                                            placeholder="Enter Housemate"
+                                            onChange={this.handleBillHousemateChange}
                                         />
                                     </FormGroup>
                                 </form>
@@ -263,6 +278,26 @@ class BillsAndPayments extends React.Component {
                         </Modal>
                     </Tab>
                 </Tabs>
+                <div className="tableButton">
+                    <ButtonGroup>
+                        <Button onClick={this.handleShowModal} >
+                            Add Bill
+                        </Button>
+                        <DropdownButton title="Pay Bill" id='pay-bills'>
+                            {this.state.myBillArr.map((bill, index) => {
+                                if (bill.paid === 0)
+                                    return (<MenuItem key={index} onClick={this.handleBillPayment}>{bill.name}</MenuItem>);
+                                })}
+                        </DropdownButton>
+                        <DropdownButton title="Remove Bill" id='remove-bills'>
+                            {this.state.myBillArr.map((bill, index) => {
+                                return (<MenuItem key={index} onClick={this.handleBillDeletion}>{bill.name}</MenuItem>);
+                            })}
+                                        
+                        </DropdownButton>
+                        <Button onClick={this.handleResetBills}>Reset Bills</Button>
+                    </ButtonGroup>
+                </div>
             </div>
         );
     }
