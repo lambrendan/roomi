@@ -147,7 +147,7 @@ router.post('/newHouse', function(req,res) {
                                                                 })
                                                             }
                                                             else {
-                                                                var createchoresTable = "CREATE TABLE " + household.chores + " (chore VARCHAR(255), housemate VARCHAR(255), isDone TINY(1))" ;
+                                                                var createchoresTable = "CREATE TABLE " + household.chores + " (chore VARCHAR(255), housemate VARCHAR(255), isDone TINYINT(1))" ;
                                                                 connection.query(createchoresTable, function(err, results) {
                                                                     if( err ) {
                                                                         res.json({
@@ -393,8 +393,15 @@ router.post('/chores', function(req,res){
             });
         }
         else {
-            const chore = [req.body.choresID, req.body.done];
-            var insertChore = "INSERT INTO " + results[0].houseName + "_chores(chores, done) VALUES(?, ?)";
+            const chore = [req.body.choresID, req.body.housemate, req.body.isDone];
+            /*const chore = { 
+                'chore': req.body.choresID,
+                'housemate': req.body.housemate,
+                'isDone': req.body.isDone,
+            }*/
+            console.log(typeof(req.body.isDone));
+            var insertChore = "INSERT INTO " + results[0].houseName + "_chores(chore, housemate, isDone) VALUES(?, ?, ?)";
+            console.log(insertChore);
             connection.query(insertChore, chore, function(err, results){
                 if(err) {
                     res.json({
