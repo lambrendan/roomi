@@ -57,7 +57,12 @@ class ParkingSchedule extends React.Component {
         })
         this.getParkingSpots();
     }
+    deleteChore(){
+        a
+    }
+    markChoreAsDone(){
 
+    }
     getParkingSpots() {
         axios.get('/parking')
         .then( res => {

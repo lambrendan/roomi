@@ -83,6 +83,13 @@ class Chores extends React.Component {
         this.setState({ value: event.target.value });
     }
 
+    deleteChore(){
+        
+    }
+    markChoreAsDone(){
+
+    }
+    
     render() {
         let heading = ["Task", "", "Assignee"]
         return(
