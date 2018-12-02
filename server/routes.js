@@ -595,6 +595,71 @@ router.get('/bills', function(req,res) {
         }
     }) 
 })
+router.post('/changePaid', function(req,res) {
+    var getHouse = 'SELECT houseName from household where uniqueID=' + "\"" + req.user.householdID + "\"" 
+    connection.query(getHouse, function(err,results){
+        if(err) {
+            res.json({
+                "code": 400,
+                "failed": true,
+                "message": err
+            })
+        }
+        else {
+            var updatePaid  = "UPDATE " + results[0].houseName + "_bills SET paid="+ req.body.paid + " WHERE name="+ "\"" + req.body.name + "\"";
+            console.log(updatePaid);
+            connection.query(updatePaid, function(err, results) {
+                if( err ) {
+                    res.json({
+                        "code": 400,
+                        "failed": true,
+                        "message": "Could not add new bill to the table"
+                    })
+                }
+                else {
+                    res.json({
+                        "code": 200,
+                        "message": "Successfully inserted bills",
+                        "failed": false
+                    })
+                }
+            })
+        }
+    }) 
+})
+
+router.post('/resetPaid', function(req,res) {
+    var getHouse = 'SELECT houseName from household where uniqueID=' + "\"" + req.user.householdID + "\"" 
+    connection.query(getHouse, function(err,results){
+        if(err) {
+            res.json({
+                "code": 400,
+                "failed": true,
+                "message": err
+            })
+        }
+        else {
+            var updatePaid  = "UPDATE " + results[0].houseName + "_bills SET paid="+ req.body.paid;
+            connection.query(updatePaid, function(err, results) {
+                if( err ) {
+                    res.json({
+                        "code": 400,
+                        "failed": true,
+                        "message": "Could not add new bill to the table"
+                    })
+                }
+                else {
+                    res.json({
+                        "code": 200,
+                        "message": "Successfully inserted bills",
+                        "failed": false
+                    })
+                }
+            })
+        }
+    }) 
+})
+
 
 router.post('/bills', function(req,res) {
     var getHouse = 'SELECT houseName from household where uniqueID=' + "\"" + req.user.householdID + "\"" 
@@ -614,7 +679,6 @@ router.post('/bills', function(req,res) {
                 'paid': req.body.paid,
                 'housemate': req.body.housemate
             } 
-            console.log(bills);
             var insertIntoDB = 'INSERT INTO ' + results[0].houseName + '_bills SET ?';
             connection.query(insertIntoDB, bills, function(err, results, fields) {
                 if( err ) {
@@ -907,7 +971,7 @@ router.post('/shopping', function(req,res) {
         }
         else {
             const shoppingList = {
-                'shopping': req.body.name
+                'shopping': req.body.shopping
             } 
             var insertIntoDB = 'INSERT INTO ' + results[0].houseName + '_shopping SET ?';
             connection.query(insertIntoDB, shoppingList, function(err, results, fields) {
@@ -941,7 +1005,7 @@ router.post('/deleteShoppingItem', function(req,res) {
             })
         }
         else {
-            var deleteFromDB = 'DELETE FROM ' + results[0].houseName + '_shopping where name=' + "\"" + req.body.item + "\"" ;
+            var deleteFromDB = 'DELETE FROM ' + results[0].houseName + '_shopping where shopping=' + "\"" + req.body.shopping + "\"" ;
             connection.query(deleteFromDB, function(err, results) {
                 if( err ) {
                     res.json({
@@ -954,7 +1018,7 @@ router.post('/deleteShoppingItem', function(req,res) {
                     res.json({
                         "code": 200,
                         "message": "Successfully deleted the shoping item",
-                        'body': req.body.item,
+                        'body': req.body.shopping,
                         "failed": false
                     })
                 }

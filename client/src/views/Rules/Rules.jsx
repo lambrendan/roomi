@@ -5,9 +5,13 @@ import Sidebar from '../../components/Sidebar/Sidebar';
 class Rules extends React.Component {
     constructor(props){
         super(props);
+        // this.onChangeAdd = this.onChangeAdd.bind(this);
+        //this.onClickRuleAdd = this.onClickRuleAdd(this);
+        // this.onChangeRemove = this.onChangeRemove(this);
+        //this.onClickRemove = this.onClickRemove(this);
         this.state={
-            currentRule: "",
-            removeRule: "",
+            currentRule: '',
+            removeRule: '',
             rules: [
                 {
                     id: 1,
@@ -26,16 +30,17 @@ class Rules extends React.Component {
     }
 
     onClickRuleAdd = event =>{
-        var newRules = this.state.rules.slice();
-        var num = this.state.rules.length +1;  
-        var rule = this.state.currentRule;  
-        newRules.concat({num, rule});  
+        const num = this.state.rules.length +1;  
+        const rule = this.state.currentRule;  
+        const ruleEntry = {id: num, descrip: rule};
+        let newRules = this.state.rules;
+        newRules.push(ruleEntry);  
+        console.log("new rules: "+ newRules);
         this.setState({
             rules: newRules,
-            currentRule: ""
+            currentRule: '',
         });
-        console.log(this.state.rules);
-
+        //document.getElementById('add').reset();
     }
 
     onChangeRemove = event =>{
@@ -45,19 +50,18 @@ class Rules extends React.Component {
     }
     
     onClickRemove = event =>{
-        var num = this.state.removeRule;
-        var size = this.state.rules.length;
-        var newRules = this.state.rules.slice(0, num);
-        var other = this.state.rules.slice(num+1, size);
-        newRules.concat(other);
+        const num = this.state.removeRule -1;
+        let splitRules = this.state.rules.splice(num, 1);
         var i = 1;
-        newRules = newRules.map((rule)=>{
-            rule.id = i;
+        var newRules = [];
+        for(let rule of this.state.rules){
+            var element = {id: i, descrip: rule.descrip};
+            newRules.push(element);
             ++i;
-        });
+        }
         this.setState({
             rules: newRules,
-            removeRule: "",
+            removeRule: '',
         });
     }
 
@@ -87,10 +91,6 @@ class Rules extends React.Component {
             width: '75%',
         };
         
-        const btnStyles={ 
-            fontSize: 15,
-            textAlign: 'left',
-        }
         const rule = this.state.rules.map((rule)=>{
             return(
                 <tr style={trStyle}>
@@ -98,6 +98,9 @@ class Rules extends React.Component {
                 </tr>
             );
         });
+        //console.log(this.state.removeRule);
+        console.log(this.state.currentRule);
+        console.log(this.state.rules);
 
         return (            
             <div style={divStyle}>
@@ -111,14 +114,15 @@ class Rules extends React.Component {
                 </table>
                 
                 <br></br>
-                <form fontSize='15' onChange={this.onChangeRemove}>
-                    Remove rule number: <input type='number'></input> 
-                    <button type='submit' >Submit</button>
-                </form>
-                <form fontSize='15' onChange={this.onChangeAdd}>
-                    Add a new rule: <input type='text' ></input>
-                    <button type='submit' onClick={this.onClickRuleAdd}>Submit</button>
-                </form>
+                <div >
+                    Remove rule number: <input type='number' onChange={this.onChangeRemove}></input> 
+                                        
+                    <button type='submit' onClick={this.onClickRemove}>Submit</button>
+                </div>
+                <div >
+                    Add a new rule: <input type='text' onChange={this.onChangeAdd}></input>
+                    <button onClick={this.onClickRuleAdd}>Submit</button>
+                </div>
             </div>
         );
     }
