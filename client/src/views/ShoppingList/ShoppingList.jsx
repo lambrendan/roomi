@@ -15,16 +15,8 @@ class ShoppingList extends React.Component {
         this.handleItemNameChange = this.handleItemNameChange.bind(this);
         this.handleShowModal = this.handleShowModal.bind(this);
 
-        const itemsNeeded = [
-            {name: "apples"},
-            {name: "bananas"},
-            {name: "soap"},
-            {name: "laundry detergent"},
-            {name: "salad"}
-        ];
-
         this.state = {
-            itemsList: itemsNeeded,
+            itemsList: [],
             showModal: false,
             itemName: '',
         };
@@ -46,8 +38,9 @@ class ShoppingList extends React.Component {
     addItem() {
         const itemName = this.state.itemName;
         const newItem = {
-            name: itemName
+            shopping: itemName
         };
+        console.log(newItem);
         axios.post('/shopping', newItem)
         .then(res=>{
             if(res.data.failed === false ) {
@@ -67,18 +60,31 @@ class ShoppingList extends React.Component {
     }
 
     removeItem(e) {
-        let val = null;
-        for(let i of this.state.itemsList) {
-            if (i.name === e.target.innerText) {
-                val = i;
-                break;
-            }
+        const body = {
+            shopping: e.target.innerText
         }
-        let ind = this.state.itemsList.indexOf(val);
-        
-        let tempArr = this.state.itemsList;
-        tempArr.splice(ind, 1);
-        this.setState({itemsList: tempArr});
+        axios.post("/deleteShoppingItem", body)
+        .then(res=>{
+            console.log('asdf');
+            if( res.data.failed === false ) {
+                let val = null;
+                for(let i of this.state.itemsList) {
+                    if (i.shopping === res.data.body) {
+                        val = i;
+                        break;
+                    }
+                }
+                let ind = this.state.itemsList.indexOf(val);
+                
+                let tempArr = this.state.itemsList;
+                tempArr.splice(ind, 1);
+                this.setState({itemsList: tempArr});
+            }
+        })
+        .catch( err=> {
+            throw err;
+        })
+       
     }
 
     handleHideModal(e) {
@@ -99,7 +105,7 @@ class ShoppingList extends React.Component {
                 <h2>Items</h2>
                     {this.state.itemsList.map((item, index) => {
                         return(
-                            <ListGroupItem onClick={this.removeItem}>{item.name}</ListGroupItem>
+                            <ListGroupItem onClick={this.removeItem}>{item.shopping}</ListGroupItem>
                         );
                     })}
                     <div className = "customButton">

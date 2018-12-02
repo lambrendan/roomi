@@ -119,7 +119,7 @@ class BillsAndPayments extends React.Component {
             if( res.data.failed === false ) {
                 let val = null;
                 for(let i of this.state.myBillArr) {
-                    if (i.name === res.body) {
+                    if (i.name === res.data.body) {
                         val = i;
                         break;
                     }
@@ -137,27 +137,51 @@ class BillsAndPayments extends React.Component {
       
     }
 
-    handleBillPayment(e) {
-        let val = null;
-        for(let i of this.state.myBillArr) {
-            if (i.name === e.target.text) {
-                val = i;
-                break;
-            }
+    handleBillPayment(e) { 
+        const body = {
+            name: e.target.text,
+            paid: 1
         }
-        let paidArr = this.state.myBillArr;
-        val.paid = 1;
+        axios.post("/changePaid", body)
+        .then(res=>{
+            if( res.data.failed === false ) {
+                let val = null;
+                for(let i of this.state.myBillArr) {
+                    if (i.name === body.name) {
+                        val = i;
+                        break;
+                    }
+                }
+                let paidArr = this.state.myBillArr;
+                val.paid = 1;
 
-        this.setState({ myBillArr: paidArr });
+                this.setState({ myBillArr: paidArr });
+            }
+        })
+        .catch(err=>{
+            throw err
+        })
+        
 
     }
 
     handleResetBills(e) {
-        let tempArr = this.state.myBillArr;
-        for(let i = 0; i < tempArr.length; ++i) {
-            tempArr[i].paid = 0;
+        const body = {
+            paid: 0
         }
-        this.setState({myBillArr: tempArr});
+        axios.post('/resetPaid', body)
+        .then( res=>{
+            if( res.data.failed === false ) {
+                let tempArr = this.state.myBillArr;
+                for(let i = 0; i < tempArr.length; ++i) {
+                    tempArr[i].paid = 0;
+                }
+                this.setState({myBillArr: tempArr});
+            }
+        })
+        .catch( err=>{
+            throw err;
+        })
     }
 
 
