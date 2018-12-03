@@ -1223,6 +1223,26 @@ router.post('/insertReminders', function(req, res){
     })
 })
 
+router.get('/housename', function(req, res){
+    var getHouse = 'SELECT houseName from household where uniqueID=' + "\"" + req.user.householdID + "\"";
+    connection.query(getHouse, function(err,results){
+        if(err) {
+            res.json({
+                "code": 400,
+                "failed": true,
+                "message": err
+            })
+        }
+        else{
+            res.json({
+                'code': 200,
+                'failed': false,
+                'housename': results[0]
+            })
+        }
+    })
+})
+
 
 
 module.exports = router;

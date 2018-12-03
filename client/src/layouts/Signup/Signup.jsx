@@ -67,7 +67,6 @@ class Signup extends Component {
   }
 
   render() {
-      console.log(this.state);
     return (
             <div className="Signup">
                 <form onSubmit={this.handleSubmit}>

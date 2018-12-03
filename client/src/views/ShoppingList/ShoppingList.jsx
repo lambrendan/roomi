@@ -65,7 +65,6 @@ class ShoppingList extends React.Component {
         }
         axios.post("/deleteShoppingItem", body)
         .then(res=>{
-            console.log('asdf');
             if( res.data.failed === false ) {
                 let val = null;
                 for(let i of this.state.itemsList) {

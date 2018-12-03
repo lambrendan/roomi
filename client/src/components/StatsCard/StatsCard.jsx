@@ -3,12 +3,11 @@ import { Row, Col } from "react-bootstrap";
 
 export class StatsCard extends Component {
   render() {
-    console.log(this.props)
     return (
       <div className="card card-stats">
         <div className="content">
           <Row>
-            <Col xs={3}>
+            <Col xs={5}>
               <div style={{fontSize: 20}}>
                 {this.props.Name}
               </div>

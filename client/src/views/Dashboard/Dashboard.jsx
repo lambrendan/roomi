@@ -34,7 +34,6 @@ class Dashboard extends Component {
       .then( resTwo => {
         axios.get("/chores")
         .then( resThree=>{
-          console.log(resThree.data)
           let tempArr = this.state.users;
           for( let i of res.data.housemates ) {
             let userObject = { 'housemate': i.housemate, 'chores': []}
@@ -79,7 +78,6 @@ class Dashboard extends Component {
     return legend;
   }
   render() {
-    console.log(this.state);
     return (
       <div className="content">
         <Grid fluid>

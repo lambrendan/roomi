@@ -12,7 +12,7 @@ class Polls extends React.Component {
             currentMsg: '',
         }
         this.handleOnClickChange = this.handleOnClickChange.bind(this);
-        this.componentDidMount = this.componentDidMount.bind(this);
+        //this.componentDidMount = this.componentDidMount.bind(this);
         this.handleOnChange = this.handleOnChange.bind(this);
     }
 
@@ -59,23 +59,22 @@ class Polls extends React.Component {
         this.setState({ value: event.target.value });
     }
 
-    componentDidMount(){
-        axios.get('/reminders')
-        .then( res => {
-            if(res.data.failed === false){
-                this.setState({ currentMsg: res.data.currentMsg[0].reminders});
-                this.props.updateMessage(this.state.currentMsg);
-                console.log('sdadsda');
+    // componentDidMount(){
+    //     axios.get('/reminders')
+    //     .then( res => {
+    //         if(res.data.failed === false){
+    //             this.setState({ currentMsg: res.data.currentMsg[0].reminders});
+    //             this.props.updateMessage(this.state.currentMsg);
                 
-            }
-            else{
-                console.log("failed to get reminders");
-            }
-        })
-        .catch( err =>{
-            throw err;
-        })
-    }
+    //         }
+    //         else{
+    //             console.log("failed to get reminders");
+    //         }
+    //     })
+    //     .catch( err =>{
+    //         throw err;
+    //     })
+    // }
     render() {
         return(
         <div>
