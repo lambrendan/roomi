@@ -15,7 +15,7 @@ export class StatsCard extends Component {
             <Col xs={7}>
               <div className="numbers">
                 <p>{this.props.statsText}</p>
-                {this.props.statsValue}
+                <p>{this.props.statsValue}</p>
               </div>
             </Col>
           </Row>

@@ -35,12 +35,11 @@ class Sidebar extends Component {
         id="sidebar"
         className="sidebar"
         data-color="black"
-        data-image={imagine}
+        //data-image={imagine}
       >
         <div className="sidebar-background" style={sidebarBackground} />
         <div className="logo">
           <a
-            href="https://www.creative-tim.com"
             className="simple-text logo-mini"
           >
             <div className="logo-img">
@@ -48,7 +47,6 @@ class Sidebar extends Component {
             </div>
           </a>
           <a
-            href="https://www.creative-tim.com"
             className="simple-text logo-normal"
           >
             Roomi

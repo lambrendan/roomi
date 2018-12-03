@@ -19,6 +19,17 @@ import {
 } from "variables/Variables.jsx";
 
 class Dashboard extends Component {
+  constructor(props) {
+    super(props);
+    this.state={
+      users: []
+    }
+  }
+
+  componentDidMount() {
+    
+  }
+
   createLegend(json) {
     var legend = [];
     for (var i = 0; i < json["names"].length; i++) {
