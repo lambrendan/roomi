@@ -13,7 +13,6 @@ class Chores extends React.Component {
             heading: [],
             isDone: [],
             housemates_with_chores: new Set(),
-            queue: [],
         };
         this.handleOnClick = this.handleOnClick.bind(this);
         this.handleOnChange = this.handleOnChange.bind(this);
