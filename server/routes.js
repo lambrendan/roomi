@@ -942,6 +942,7 @@ router.post('/rules', function(req,res) {
                 'rules': req.body.rules
             } 
             var insertIntoDB = 'INSERT INTO ' + results[0].houseName + '_rules SET ?';
+            console.log(insertIntoDB);
             connection.query(insertIntoDB, rules, function(err, results, fields) {
                 if( err ) {
                     res.json({
@@ -949,6 +950,39 @@ router.post('/rules', function(req,res) {
                         "failed": true,
                         "message": "Couldn't make query to get parking spots"
                     }); 
+                }
+                else {
+                    console.log('what');
+                    res.json({
+                        "code": 200,
+                        "message": "Successfully inserted rules",
+                        "failed": false
+                    })
+                }
+            })
+        }
+    }) 
+})
+
+router.post('/deleteRules', function(req,res) {
+    var getHouse = 'SELECT houseName from household where uniqueID=' + "\"" + req.user.householdID + "\"" 
+    connection.query(getHouse, function(err,results){
+        if(err) {
+            res.json({
+                "code": 400,
+                "failed": true,
+                "message": err
+            })
+        }
+        else {
+            var deleteFromDB = 'DELETE FROM ' + results[0].houseName + '_rules where rules=' + "\"" + req.body.rules + "\"" ;
+            connection.query(deleteFromDB, function(err, results) {
+                if( err ) {
+                    res.json({
+                        "code": 400,
+                        "failed": true,
+                        "message": "Could not add new rule to the table"
+                    })
                 }
                 else {
                     res.json({
@@ -1058,5 +1092,7 @@ router.post('/deleteShoppingItem', function(req,res) {
         }
     }) 
 })
+
+
 
 module.exports = router;

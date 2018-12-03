@@ -1,6 +1,9 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
-import Sidebar from '../../components/Sidebar/Sidebar';
+import "./Rules.css"
+import { Button,
+    FormGroup,FormControl, ControlLabel, ButtonGroup, Form, ListGroup,
+    DropdownButton, MenuItem, ListGroupItem } from 'react-bootstrap';
+import axios from 'axios';
 
 class Rules extends React.Component {
     constructor(props){
@@ -10,124 +13,148 @@ class Rules extends React.Component {
         // this.onChangeRemove = this.onChangeRemove(this);
         //this.onClickRemove = this.onClickRemove(this);
         this.state={
-            currentRule: '',
-            removeRule: '',
+            currentRule: "",
             rules: [
                 {
-                    id: 1,
-                    descrip: 'Wash your dishes',
-                },
-                
+                    rules: 'Wash your dishes'
+                }
             ],
         };
     }
 
+    componentDidMount() {
+        axios.get('/rules')
+        .then( res=> {
+            this.setState({
+                rules: res.data.rules
+            })
+        })
+        .catch( err=> {
+            throw err;
+        })
+    }
 
     onChangeAdd = event => {
         this.setState({
-            currentRule: event.target.value,
+            currentRule: event.target.value
         });
     }
 
-    onClickRuleAdd = event =>{
-        const num = this.state.rules.length +1;  
-        const rule = this.state.currentRule;  
-        const ruleEntry = {id: num, descrip: rule};
-        let newRules = this.state.rules;
-        newRules.push(ruleEntry);  
-        console.log("new rules: "+ newRules);
-        this.setState({
-            rules: newRules,
-            currentRule: '',
-        });
-        //document.getElementById('add').reset();
-    }
-
-    onChangeRemove = event =>{
-        this.setState({
-            removeRule: event.target.value,
-        });
+    onClickRuleAdd = event => {
+        var newRules = this.state.rules; 
+        var rule = this.state.currentRule; 
+        var ruleEntry = { rules: rule} 
+        var body = { rules: rule }
+        axios.post("/rules",  body)
+        .then(res=>{
+            if( res.data.failed === false ) {
+                newRules.push(ruleEntry);  
+                this.setState({
+                    rules: newRules,
+                    currentRule: ""
+                });
+            }
+        })
+        .catch( err=>{
+            throw err;
+        })
     }
     
     onClickRemove = event =>{
-        const num = this.state.removeRule -1;
-        let splitRules = this.state.rules.splice(num, 1);
-        var i = 1;
-        var newRules = [];
-        for(let rule of this.state.rules){
-            var element = {id: i, descrip: rule.descrip};
-            newRules.push(element);
-            ++i;
-        }
-        this.setState({
-            rules: newRules,
-            removeRule: '',
-        });
+        const body = { rules: event.target.text};
+        axios.post('/deleteRules', body)
+        .then( res=>{
+            if( res.data.failed === false ) {
+                let val = null;
+                for(let i of this.state.rules) {
+                    if (i.rules === body.rules) {
+                        val = i;
+                        break;
+                    }
+                }
+                let ind = this.state.rules.indexOf(val);
+                let tempArr = this.state.rules;
+                tempArr.splice(ind, 1);
+                this.setState({rules: tempArr});
+            }
+        })
+        .catch( err=>{
+            throw err;
+        })
+        // var num = this.state.removeRule;
+        // var size = this.state.rules.length;
+        // var newRules = this.state.rules.slice(0, num);
+        // var other = this.state.rules.slice(num+1, size);
+        // newRules.concat(other);
+        // var i = 1;
+        // newRules = newRules.map((rule)=>{
+        //     rule.id = i;
+        //     ++i;
+        // });
+        // this.setState({
+        //     rules: newRules,
+        //     removeRule: "",
+        // });
     }
 
     render() {
-        const divStyle ={
-            margin: '60px',
-        };
-        
-        const tableStyles={
-            border: '1px solid black',
-            borderCollapse: 'collapse',
-            align: 'right',
-            width: '75%',
-        };
-        
-        const thStyles={
-            textAlign: 'center',
-            border: '1px solid black',
-            height: 50,
-            fontSize: 30,
-            width: '75%',
-        };
-        
-        const trStyle={ 
-            fontSize: 20,
-            align: 'left',
-            width: '75%',
-        };
-        
-        const rule = this.state.rules.map((rule)=>{
-            return(
-                <tr style={trStyle}>
-                    {rule.id}. {rule.descrip}
-                </tr>
-            );
-        });
-        //console.log(this.state.removeRule);
-        console.log(this.state.currentRule);
-        console.log(this.state.rules);
-
         return (            
-            <div style={divStyle}>
-                <table style={tableStyles}>
-                    <tbody>
-                        <tr>
-                      	    <th style={thStyles}> Rules Table</th>
-                        </tr>
-                        {rule}
-                    </tbody>
-                </table>
-                
-                <br></br>
-                <div >
-                    Remove rule number: <input type='number' onChange={this.onChangeRemove}></input> 
-                                        
-                    <button type='submit' onClick={this.onClickRemove}>Submit</button>
+            <div className='divStyles'>
+                <div>
+                    <table className='tableStyles'> 
+                        <thead>
+                            <tr>
+                                <th className='thStyles'>House Rules</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                {this.state.rules.map((rule, index)=>{
+                                    console.log(rule);
+                                    return(
+                                        <tr style={{fontSize: '20px'}}>
+                                        {index+1}. {rule.rules}
+                                        </tr>
+                                )})}
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
-                <div >
-                    Add a new rule: <input type='text' onChange={this.onChangeAdd}></input>
-                    <button onClick={this.onClickRuleAdd}>Submit</button>
+                <div style={{paddingTop:'30'}}>
+                    <ControlLabel >Add a Rule</ControlLabel>
+                    <Form inline>
+                        <FormGroup controlID='formBasicText'>
+                            <FormControl
+                                type="text"
+                                value={this.state.currentRule}
+                                placeholder="Enter Rule"
+                                onChange={this.onChangeAdd}
+                            /> {' '}
+                            <Button onClick={this.onClickRuleAdd} >
+                            Add Rule
+                        </Button>
+                        </FormGroup>
+                    </Form>
+                    <ControlLabel >Delete a Rule</ControlLabel>
+                    <div style={{paddingBottom: '1'}}></div>
+                    <DropdownButton title="Remove Rule" id='remove-rules'>
+                        {this.state.rules.map((rule, index) => {
+                        return (<MenuItem key={index} onClick={this.onClickRemove}>{rule.rules}</MenuItem>);
+                        })}
+                    </DropdownButton>    
                 </div>
+                {/* <form fontSize='15' onChange={this.onChangeRemove}>
+                    Remove rule number: <input type='number'></input> 
+                    <button type='submit' >Submit</button>
+                </form>
+                <form fontSize='15' onChange={this.onChangeAdd}>
+                    Add a new rule: <input type='text' ></input>
+                    <button type='submit' onClick={this.onClickRuleAdd}>Submit</button>
+                </form> */}
             </div>
         );
     }
 
 }
 
-ReactDOM.render(<Rules />, document.getElementById('root'));
 export default Rules;

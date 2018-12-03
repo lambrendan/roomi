@@ -119,7 +119,7 @@ class ShoppingList extends React.Component {
                 >
                     <Modal.Header closeButton>
                         <Modal.Title id="contained-modal-title-lg">
-                        Add Bill
+                        Add Item
                         </Modal.Title>
                     </Modal.Header>
                     <Modal.Body>

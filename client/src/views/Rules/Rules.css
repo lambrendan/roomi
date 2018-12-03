@@ -1,0 +1,32 @@
+.divStyle {
+    margin: 60px;
+}
+
+.tableElements {
+    border: 1px solid black;
+}
+
+.tableStyles {
+    border-collapse: collapse;
+    box-align: right;
+    width: 75%;
+}
+
+.thStyles{
+    text-align: center;
+    border: 1px solid black;
+    height: 50;
+    font-size: 30px;
+    width: 75%;
+}
+
+.trStyle { 
+    font-size: 20;
+    box-align: left;
+    width: 75%;
+}
+
+.btnStyles { 
+    font-size: 15;
+    text-align: left;
+}
