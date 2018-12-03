@@ -46,7 +46,7 @@ connection.connect(function(err) {
                 console.log("Users Table Initialized");
             }
         })
-        var household = "CREATE TABLE IF NOT EXISTS household (uniqueID VARCHAR(255), houseName VARCHAR(255), housemate VARCHAR(255), bills VARCHAR(255), parking VARCHAR(255), rules VARCHAR(255), chores VARCHAR(255), shopping VARCHAR(255), polls VARCHAR(255))";
+        var household = "CREATE TABLE IF NOT EXISTS household (uniqueID VARCHAR(255), houseName VARCHAR(255), housemate VARCHAR(255), bills VARCHAR(255), parking VARCHAR(255), rules VARCHAR(255), chores VARCHAR(255), shopping VARCHAR(255), reminders VARCHAR(255))";
         connection.query(household, function(err, result) {
             if( err ) {
                 console.log(err);
