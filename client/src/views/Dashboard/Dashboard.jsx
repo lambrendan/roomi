@@ -26,6 +26,10 @@ class Dashboard extends Component {
     }
   }
 
+  componentDidMount() {
+    
+  }
+
   createLegend(json) {
     var legend = [];
     for (var i = 0; i < json["names"].length; i++) {
