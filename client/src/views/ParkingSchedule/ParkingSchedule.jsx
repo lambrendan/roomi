@@ -201,7 +201,7 @@ class ParkingSchedule extends React.Component {
                 })
                 return data;
             })
-        }, 10000);
+        }, 1000*60*60*24*7);
     }
 
     render() {

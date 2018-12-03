@@ -9,6 +9,7 @@ import Sidebar from "components/Sidebar/Sidebar";
 import { style } from "variables/Variables.jsx";
 
 import dashboardRoutes from "routes/dashboard.jsx";
+import axios from "axios";
 
 class Dashboard extends Component {
   constructor(props) {
@@ -16,8 +17,18 @@ class Dashboard extends Component {
     this.componentDidMount = this.componentDidMount.bind(this);
     this.handleNotificationClick = this.handleNotificationClick.bind(this);
     this.state = {
-      _notificationSystem: null
+      _notificationSystem: null,
+      currentMsg: 'hi',
     };
+    this.updateMessage = this.updateMessage.bind(this);
+  }
+
+  updateMessage(event) {
+    console.log('blah');
+    console.log(event);
+    this.setState({
+      currentMsg: event
+    })
   }
   handleNotificationClick(position) {
     var color = Math.floor(Math.random() * 4 + 1);
@@ -38,12 +49,13 @@ class Dashboard extends Component {
       default:
         break;
     }
+    console.log("woaaa");
+    console.log(this.state.currentMsg);
     this.state._notificationSystem.addNotification({
       title: <span data-notify="icon" className="pe-7s-gift" />,
       message: (
         <div>
-          Welcome to <b>Light Bootstrap Dashboard</b> - a beautiful freebie for
-          every web developer.
+          {this.state.currentMsg}
         </div>
       ),
       level: level,
@@ -51,39 +63,54 @@ class Dashboard extends Component {
       autoDismiss: 15
     });
   }
+
   componentDidMount() {
-    this.setState({ _notificationSystem: this.refs.notificationSystem });
-    var _notificationSystem = this.refs.notificationSystem;
-    var color = Math.floor(Math.random() * 4 + 1);
-    var level;
-    switch (color) {
-      case 1:
-        level = "success";
-        break;
-      case 2:
-        level = "warning";
-        break;
-      case 3:
-        level = "error";
-        break;
-      case 4:
-        level = "info";
-        break;
-      default:
-        break;
-    }
-    _notificationSystem.addNotification({
-      title: <span data-notify="icon" className="pe-7s-gift" />,
-      message: (
-        <div>
-          Welcome to <b>Light Bootstrap Dashboard</b> - a beautiful freebie for
-          every web developer.
-        </div>
-      ),
-      level: level,
-      position: "tr",
-      autoDismiss: 15
-    });
+    axios.get('/reminders')
+    .then(res =>{
+      if(res.data.failed === false){
+        this.setState({ 
+          currentMsg: res.data.currentMsg[0].reminders,
+          _notificationSystem: this.refs.notificationSystem 
+        });
+        var _notificationSystem = this.refs.notificationSystem;
+        var color = Math.floor(Math.random() * 4 + 1);
+        var level;
+        switch (color) {
+          case 1:
+            level = "success";
+            break;
+          case 2:
+            level = "warning";
+            break;
+          case 3:
+            level = "error";
+            break;
+          case 4:
+            level = "info";
+            break;
+          default:
+            break;
+        }
+        _notificationSystem.addNotification({
+          message: (
+            <div>
+              {this.state.currentMsg}
+            </div>
+          ),
+          level: level,
+          position: "tr",
+          autoDismiss: 15
+        });
+      }
+      else{
+        console.log("failed to get reminders for notification");
+      }
+    })
+    .catch( err =>{
+      throw err;
+    })
+    //this.setState({ _notificationSystem: this.refs.notificationSystem });
+    
   }
   componentDidUpdate(e) {
     if (
@@ -125,7 +152,7 @@ class Dashboard extends Component {
               if (prop.redirect)
                 return <Redirect from={prop.path} to={prop.to} key={key} />;
               return (
-                <Route exact path={prop.path} component={prop.component} key={key} />
+                <Route exact path={prop.path} render={props=>(<prop.component {...this.state} updateMessage = {this.updateMessage}/>)} key={key} />
               );
             })}
           </Switch>
