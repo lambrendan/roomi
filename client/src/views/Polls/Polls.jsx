@@ -1,7 +1,6 @@
 import React from 'react';
 import { Button,
-    FormGroup,FormControl, ControlLabel, ButtonGroup, Form, ListGroup,
-    DropdownButton, MenuItem, ListGroupItem } from 'react-bootstrap';
+    FormGroup,FormControl, ControlLabel, Form } from 'react-bootstrap';
 import styles from './Polls.css';
 import axios from 'axios';
 
@@ -16,23 +15,43 @@ class Polls extends React.Component {
         this.componentDidMount = this.componentDidMount.bind(this);
         this.handleOnChange = this.handleOnChange.bind(this);
     }
+
+  
     handleOnClickChange(){
         this.setState({ currentMsg: this.state.value});
         const data = {
             currentMsg: this.state.value,
         }
-        axios.post('/reminders', data)
-        .then(res => {
-            if(res.data.failed === false){
-                console.log("successively update reminders table");
-            }
-            else{
-                console.log("failed to update reminders tables");
-            }
-        })
-        .catch( err =>{
-            throw err;
-        })
+        if(this.state.currentMsg.length === 0){
+            axios.post('/insertReminders', data)
+            .then(res => {
+                if(res.data.failed === false){
+                    console.log(res.data);
+                    console.log("successively insert into reminders table");
+                }
+                else{
+                    console.log("failed to insert into reminders tables");
+                }
+            })
+            .catch( err =>{
+                throw err;
+            })
+        }
+        else{
+            axios.post('/reminders', data)
+            .then(res => {
+                if(res.data.failed === false){
+                    console.log(res.data);
+                    console.log("successively update reminders table");
+                }
+                else{
+                    console.log("failed to update reminders tables");
+                }
+            })
+            .catch( err =>{
+                throw err;
+            })
+        }
         this.setState({ value: ''})
     }
 
@@ -44,7 +63,10 @@ class Polls extends React.Component {
         axios.get('/reminders')
         .then( res => {
             if(res.data.failed === false){
-                console.log(res.data.currentMsg);
+                this.setState({ currentMsg: res.data.currentMsg[0].reminders});
+                this.props.updateMessage(this.state.currentMsg);
+                console.log('sdadsda');
+                
             }
             else{
                 console.log("failed to get reminders");
@@ -62,7 +84,7 @@ class Polls extends React.Component {
             </div>
             <ControlLabel>Change Reminder</ControlLabel>
             <Form inline> 
-                <FormGroup controlID='formBasicText'>
+                <FormGroup controlid='formBasicText'>
                     <FormControl
                         type="text"
                         value={this.state.value}

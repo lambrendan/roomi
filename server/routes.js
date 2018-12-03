@@ -89,6 +89,7 @@ router.post('/newHouse', function(req,res) {
 
                 }
                 var insertDB = 'INSERT INTO household SET ?';
+                console.log(insertDB);
                 connection.query(insertDB, household, function(err, results, fields) {
                     if( err ) {
                         res.json({ 
@@ -1151,6 +1152,41 @@ router.post('/reminders', function(req, res){
                         'code': 200,
                         'failed': false,
                         'message': 'table updated correctly with current reminder' 
+                    })
+                }
+            })
+        }
+    })
+})
+
+router.post('/insertReminders', function(req, res){
+    var getHouse = 'SELECT houseName from household where uniqueID=' + "\"" + req.user.householdID + "\"";
+    connection.query(getHouse, function(err,results){
+        if(err) {
+            res.json({
+                "code": 400,
+                "failed": true,
+                "message": err
+            })
+        }
+        else{
+            var updateDB = "INSERT INTO " + results[0].houseName + "_reminders" + " SET ?";
+            var data = {
+                "reminders": req.body.currentMsg,
+            }
+            connection.query(updateDB, data, function(err, results) {
+                if( err ) {
+                    res.json({
+                        "code": 400,
+                        "failed": true,
+                        "message": "Couldn't insert into reminders"
+                    })
+                }
+                else {
+                    res.json({
+                        'code': 200,
+                        'failed': false,
+                        'message': 'table inserted correctly with current reminder' 
                     })
                 }
             })

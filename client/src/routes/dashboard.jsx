@@ -39,8 +39,8 @@ const dashboardRoutes = [
     component: ShoppingList,
   },
   {
-    path: "/dashboard/polls",
-    name: "Polls",
+    path: "/dashboard/reminders",
+    name: "Reminders",
     component: Polls,
   },
   { redirect: true, path: "/", to: "/dashboard", name: "Dashboard" }
