@@ -8,14 +8,20 @@ export class StatsCard extends Component {
         <div className="content">
           <Row>
             <Col xs={5}>
-              <div className="icon-big text-center icon-warning">
-                {this.props.bigIcon}
+              <div style={{fontSize: 20}}>
+                {this.props.Name}
               </div>
             </Col>
             <Col xs={7}>
               <div className="numbers">
-                <p>{this.props.statsText}</p>
-                <p>{this.props.statsValue}</p>
+                <p>Parking: {this.props.Parking}</p>
+                <p><u>Chores</u> {this.props.Chore.map(chores=>{
+                  return(
+                    <li>{chores}</li>
+                  )
+                })}
+              
+                </p>
               </div>
             </Col>
           </Row>

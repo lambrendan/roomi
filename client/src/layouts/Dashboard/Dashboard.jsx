@@ -24,8 +24,6 @@ class Dashboard extends Component {
   }
 
   updateMessage(event) {
-    console.log('blah');
-    console.log(event);
     this.setState({
       currentMsg: event
     })
@@ -49,8 +47,6 @@ class Dashboard extends Component {
       default:
         break;
     }
-    console.log("woaaa");
-    console.log(this.state.currentMsg);
     this.state._notificationSystem.addNotification({
       title: <span data-notify="icon" className="pe-7s-gift" />,
       message: (
@@ -68,10 +64,18 @@ class Dashboard extends Component {
     axios.get('/reminders')
     .then(res =>{
       if(res.data.failed === false){
-        this.setState({ 
-          currentMsg: res.data.currentMsg[0].reminders,
-          _notificationSystem: this.refs.notificationSystem 
-        });
+        if( res.data.currentMsg[0] === undefined ) {
+          this.setState({
+            currentMsg: "Welcome to Roomi!",
+            _notificationSystem: this.refs.notificationSystem 
+          })
+        }
+        else {
+          this.setState({ 
+            currentMsg: res.data.currentMsg[0].reminders,
+            _notificationSystem: this.refs.notificationSystem 
+          });
+        } 
         var _notificationSystem = this.refs.notificationSystem;
         var color = Math.floor(Math.random() * 4 + 1);
         var level;

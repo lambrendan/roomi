@@ -8,23 +8,42 @@ import logo from "assets/img/reactlogo.png";
 import { withRouter } from 'react-router-dom'
 
 import dashboardRoutes from "routes/dashboard.jsx";
+import axios from "axios";
 
 class Sidebar extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      housename: "",
       width: window.innerWidth
     };
   }
   activeRoute(routeName) {
+    console.log(this.props.location.pathname)
+    console.log(routeName);
+    return this.props.location.pathname === routeName ? "active" : "";
+    //console.log(routeName + ": "+ this.props.location.pathname.indexOf(routeName));
     return this.props.location.pathname.indexOf(routeName) > -1 ? "active" : "";
   }
   updateDimensions() {
     this.setState({ width: window.innerWidth });
   }
   componentDidMount() {
-    this.updateDimensions();
-    window.addEventListener("resize", this.updateDimensions.bind(this));
+    axios.get("/housename")
+    .then( res=>{
+      if( res.data.failed === false ) {
+        this.setState({
+          housename: res.data.housename,
+          width: window.innerWidth
+        });
+        window.addEventListener("resize", this.updateDimensions.bind(this));
+      }
+    })
+    .catch( err=>{
+      throw err;
+    })
+ 
+
   }
   render() {
     const sidebarBackground = {
@@ -40,6 +59,7 @@ class Sidebar extends Component {
         <div className="sidebar-background" style={sidebarBackground} />
         <div className="logo">
           <a
+            //href="https://www.creative-tim.com"
             className="simple-text logo-mini"
           >
             <div className="logo-img">
@@ -47,9 +67,10 @@ class Sidebar extends Component {
             </div>
           </a>
           <a
+            //href="https://www.creative-tim.com"
             className="simple-text logo-normal"
           >
-            Roomi
+            {this.state.housename.houseName}
           </a>
         </div>
         <div className="sidebar-wrapper">

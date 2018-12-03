@@ -23,8 +23,6 @@ class HeaderLinks extends Component {
   }
 
   render() {
-    console.log(this.props)
-    
     return (
       <div>
         <Nav pullRight>
