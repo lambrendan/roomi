@@ -862,7 +862,39 @@ router.post('/deleteParking', function(req,res){
             })
         }
     })
+})
 
+router.post('/shuffleParking', function(req, res) {
+    var getHouse = 'SELECT houseName from household where uniqueID=' + "\"" + req.user.householdID + "\"" 
+    connection.query(getHouse, function(err,results){
+        if(err) {
+            res.json({
+                "code": 400,
+                "failed": true,
+                "message": err
+            })
+        }
+        else {
+            var updateParkingAssignments = 'UPDATE ' + results[0].houseName + '_parking SET housemate=' + "\"" + req.body.housemate + "\"" + " where parkingSpot=" + "\"" + req.body.parkingSpot + "\"";
+            console.log(updateParkingAssignments);
+            connection.query(updateParkingAssignments, function(err, results){
+                if( err ) {
+                    res.json({
+                        "code": 400,
+                        "failed": true,
+                        "message": "Couldn't make query to update parking"
+                    });
+                }
+                else {
+                    res.json({
+                        "code": 200,
+                        "failed": false,
+                        "message": "Made query to update parking assginments"
+                    })
+                }
+            })
+        }
+    })
 })
 
 router.get('/rules', function(req,res) {
