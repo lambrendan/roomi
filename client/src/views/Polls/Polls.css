@@ -1,4 +1,4 @@
-input[type=input], select {
+.newReminder {
     width: 100%;
     padding: 12px 20px;
     margin: 8px 0;
@@ -6,7 +6,4 @@ input[type=input], select {
     border: 1px solid #ccc;
     border-radius: 4px;
     box-sizing: border-box;
-}
-.delete {
-    float: right;
 }

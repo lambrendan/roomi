@@ -85,9 +85,9 @@ router.post('/newHouse', function(req,res) {
                     'rules': req.body.house+"_rules",
                     'chores': req.body.house+"_chores",
                     'shopping': req.body.house+'_shopping',
-                    'polls': req.body.house+'_polls'
+                    'reminders': req.body.house+'_reminders'
 
-                } 
+                }
                 var insertDB = 'INSERT INTO household SET ?';
                 connection.query(insertDB, household, function(err, results, fields) {
                     if( err ) {
@@ -168,13 +168,13 @@ router.post('/newHouse', function(req,res) {
                                                                                 })
                                                                             }
                                                                             else {
-                                                                                var createpollsTable = "CREATE TABLE " + household.polls + " (polls VARCHAR(255))" ;
-                                                                                connection.query(createpollsTable, function(err, results) {
+                                                                                var createRemindersTable = "CREATE TABLE " + household.reminders + " (reminders VARCHAR(255))" ;
+                                                                                connection.query(createRemindersTable, function(err, results) {
                                                                                     if( err ) {
                                                                                         res.json({
                                                                                             "code": 400,
                                                                                             "failed": true,
-                                                                                            "message": "Couldn't create table polls "
+                                                                                            "message": "Couldn't create table reminders "
                                                                                         })
                                                                                     }
                                                                                     else {
@@ -1091,6 +1091,71 @@ router.post('/deleteShoppingItem', function(req,res) {
             })
         }
     }) 
+})
+
+router.get('/reminders', function(req, res){
+    var getHouse = 'SELECT houseName from household where uniqueID=' + "\"" + req.user.householdID + "\"";
+    connection.query(getHouse, function(err,results){
+        if(err) {
+            res.json({
+                "code": 400,
+                "failed": true,
+                "message": err
+            })
+        }
+        else{
+            var getReminders = "SELECT * from " + results[0].houseName + "_reminders";
+            connection.query(getReminders, function(err, results) {
+                if( err ) {
+                    res.json({
+                        "code": 400,
+                        "failed": true,
+                        "message": "Couldn't update reminders"
+                    })
+                }
+                else {
+                    res.json({
+                        'code': 200,
+                        'failed': false,
+                        'currentMsg': results,
+                        'message': 'table updated correctly with current reminder' 
+                    })
+                }
+            })
+        }
+    })
+})
+
+router.post('/reminders', function(req, res){
+    var getHouse = 'SELECT houseName from household where uniqueID=' + "\"" + req.user.householdID + "\"";
+    connection.query(getHouse, function(err,results){
+        if(err) {
+            res.json({
+                "code": 400,
+                "failed": true,
+                "message": err
+            })
+        }
+        else{
+            var updateDB = "UPDATE " + results[0].houseName + "_reminders" + " SET reminders=" + "\""+ req.body.currentMsg + "\"";
+            connection.query(updateDB, function(err, results) {
+                if( err ) {
+                    res.json({
+                        "code": 400,
+                        "failed": true,
+                        "message": "Couldn't update reminders"
+                    })
+                }
+                else {
+                    res.json({
+                        'code': 200,
+                        'failed': false,
+                        'message': 'table updated correctly with current reminder' 
+                    })
+                }
+            })
+        }
+    })
 })
 
 
