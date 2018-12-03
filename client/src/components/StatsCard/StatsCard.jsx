@@ -3,19 +3,26 @@ import { Row, Col } from "react-bootstrap";
 
 export class StatsCard extends Component {
   render() {
+    console.log(this.props)
     return (
       <div className="card card-stats">
         <div className="content">
           <Row>
-            <Col xs={5}>
-              <div className="icon-big text-center icon-warning">
-                {this.props.bigIcon}
+            <Col xs={3}>
+              <div style={{fontSize: 20}}>
+                {this.props.Name}
               </div>
             </Col>
             <Col xs={7}>
               <div className="numbers">
-                <p>{this.props.statsText}</p>
-                <p>{this.props.statsValue}</p>
+                <p>Parking: {this.props.Parking}</p>
+                <p><u>Chores</u> {this.props.Chore.map(chores=>{
+                  return(
+                    <li>{chores}</li>
+                  )
+                })}
+              
+                </p>
               </div>
             </Col>
           </Row>

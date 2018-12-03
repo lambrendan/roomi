@@ -17,17 +17,55 @@ import {
   responsiveBar,
   legendBar
 } from "variables/Variables.jsx";
+import axios from "axios";
 
 class Dashboard extends Component {
   constructor(props) {
     super(props);
     this.state={
-      users: []
+      users: [],
     }
   }
 
   componentDidMount() {
-    
+    axios.get("/housemates")
+    .then( res=>{  
+      axios.get("/parking")
+      .then( resTwo => {
+        axios.get("/chores")
+        .then( resThree=>{
+          console.log(resThree.data)
+          let tempArr = this.state.users;
+          for( let i of res.data.housemates ) {
+            let userObject = { 'housemate': i.housemate, 'chores': []}
+            for( var j = 0; j<resTwo.data.parking.length; j++){
+              if( resTwo.data.parking[j].housemate === i.housemate ) {
+                userObject['parking'] = true;
+                break;
+              }
+            }
+            for( var k = 0; k < resThree.data.chores.length; k++) {
+              if( resThree.data.chores[k].housemate === i.housemate ) {
+                userObject['chores'].push(resThree.data.chores[k].chore)
+              }
+            }
+            tempArr.push(userObject)
+          }
+          this.setState({
+            users: tempArr
+          }) 
+        })
+        .catch( err => {
+          throw err;
+        })
+      })
+      .catch( err=>{
+        throw err;
+      })
+    })
+    .catch( err=>{
+      throw err;
+    })
   }
 
   createLegend(json) {
@@ -41,11 +79,34 @@ class Dashboard extends Component {
     return legend;
   }
   render() {
+    console.log(this.state);
     return (
       <div className="content">
         <Grid fluid>
           <Row>
-            <Col lg={3} sm={6}>
+            {this.state.users.map(user=>{
+              if( user.hasOwnProperty('parking'))
+                return (
+                  <Col lg={3} sm={6}>
+                    <StatsCard
+                      Name={user.housemate}
+                      Parking={'\u2713'}
+                      Chore={user.chores}
+                    />
+                  </Col>
+                )
+              else 
+                return(
+                  <Col lg={3} sm={6}>
+                    <StatsCard
+                      Name={user.housemate}
+                      Parking={'\u2715'}
+                      Chore={user.chores}
+                    />
+                  </Col>
+                )
+            })}
+            {/* <Col lg={3} sm={6}>
               <StatsCard
                 bigIcon={<i className="pe-7s-server text-warning" />}
                 statsText="Capacity"
@@ -80,9 +141,9 @@ class Dashboard extends Component {
                 statsIcon={<i className="fa fa-refresh" />}
                 statsIconText="Updated now"
               />
-            </Col>
+            </Col> */}
           </Row>
-          <Row>
+          {/* <Row>
             <Col md={8}>
               <Card
                 statsIcon="fa fa-history"
@@ -165,7 +226,7 @@ class Dashboard extends Component {
                 }
               />
             </Col>
-          </Row>
+          </Row> */}
         </Grid>
       </div>
     );

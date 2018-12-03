@@ -352,6 +352,36 @@ router.post('/logout', function(req,res) {
     }
 })
 
+router.get('/housemates', function(req,res){
+    var getHouseName = 'SELECT houseName from household where uniqueID=' + "\"" + req.user.householdID + "\"";
+    connection.query(getHouseName, function(err, results) {
+        if( err ) {
+            res.json({
+                "code": 400,
+                "failed": true,
+                "message": "Couldn't make query to get current household from users"
+            });
+        }
+        else{
+            var getChores = 'SELECT * from ' + results[0].houseName + "_housemate";
+            connection.query(getChores, function(err, results) {
+                if( err ) {
+                    res.json({
+                        "code": 400,
+                        "failed": true,
+                        "message": "Couldn't make query to get chores"
+                    }); 
+                }
+                else {
+                    res.json({
+                        "housemates": results,
+                    })
+                }
+            })
+        }
+    })
+})
+
 router.get('/chores', function(req,res) {
     var getHouseName = 'SELECT houseName from household where uniqueID=' + "\"" + req.user.householdID + "\"";
     connection.query(getHouseName, function(err, results) {
@@ -876,7 +906,6 @@ router.post('/shuffleParking', function(req, res) {
         }
         else {
             var updateParkingAssignments = 'UPDATE ' + results[0].houseName + '_parking SET housemate=' + "\"" + req.body.housemate + "\"" + " where parkingSpot=" + "\"" + req.body.parkingSpot + "\"";
-            console.log(updateParkingAssignments);
             connection.query(updateParkingAssignments, function(err, results){
                 if( err ) {
                     res.json({
