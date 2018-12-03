@@ -8,6 +8,10 @@ import axios from 'axios';
 class Rules extends React.Component {
     constructor(props){
         super(props);
+        // this.onChangeAdd = this.onChangeAdd.bind(this);
+        //this.onClickRuleAdd = this.onClickRuleAdd(this);
+        // this.onChangeRemove = this.onChangeRemove(this);
+        //this.onClickRemove = this.onClickRemove(this);
         this.state={
             currentRule: "",
             rules: [
