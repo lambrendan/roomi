@@ -37,6 +37,7 @@ class BillsAndPayments extends React.Component {
                         ];
         this.state = {
             myBillArr: [],
+            housemate: [],
             showModal: false,
             showDeleteModal: false,
             formBillName: '',
@@ -50,6 +51,16 @@ class BillsAndPayments extends React.Component {
     componentDidMount() {
         axios.get('/bills')
         .then( res=> {
+            axios.get('/housemates')
+            .then( resTwo => {
+                this.setState({
+                    myBillArr: res.data.bills,
+                    housemate: resTwo.data.housemates
+                })
+            })
+            .catch( errTwo => {
+                throw errTwo
+            })
             this.setState({
                 myBillArr: res.data.bills
             })
@@ -107,7 +118,7 @@ class BillsAndPayments extends React.Component {
     }
 
     handleBillHousemateChange(e) {
-        this.setState({ formBillHousemate: e.target.value });
+        this.setState({ formBillHousemate: e.target.text });
     }
 
     handleBillDeletion(e) {
@@ -286,14 +297,19 @@ class BillsAndPayments extends React.Component {
                                             onChange={this.handleBillDueDateChange}
                                         />
                                         <ControlLabel>Housemate</ControlLabel>
-                                        <FormControl
+                                        {/* <FormControl
                                             type="text"
                                             value={this.state.formBillHousemate}
                                             placeholder="Enter Housemate"
                                             onChange={this.handleBillHousemateChange}
-                                        />
+                                        /> */}
                                     </FormGroup>
                                 </form>
+                                <DropdownButton title="Name" id='pay-bills'>
+                                    {this.state.housemate.map((person, index) => {
+                                            return (<MenuItem key={index} onClick={this.handleBillHousemateChange}>{person.housemate}</MenuItem>);
+                                        })}
+                                </DropdownButton>
                                 </div>
                             </Modal.Body>
                             <Modal.Footer>

@@ -7,7 +7,7 @@ import {  Route, Switch, Router } from "react-router-dom";
 class Routes extends Component {
   constructor( props ) {
     super(props);
-    this.state = { email: "", password:"", bookmarks: [], favorites: [], env: "dev"}
+    this.state = { username: "", password:"", bookmarks: [], favorites: [], env: "dev"}
   }
 
   render() {

@@ -14,11 +14,7 @@ class Rules extends React.Component {
         //this.onClickRemove = this.onClickRemove(this);
         this.state={
             currentRule: "",
-            rules: [
-                {
-                    rules: 'Wash your dishes'
-                }
-            ],
+            rules: [],
         };
     }
 
@@ -64,6 +60,7 @@ class Rules extends React.Component {
         const body = { rules: event.target.text};
         axios.post('/deleteRules', body)
         .then( res=>{
+            console.log(res);
             if( res.data.failed === false ) {
                 let val = null;
                 for(let i of this.state.rules) {
@@ -75,6 +72,7 @@ class Rules extends React.Component {
                 let ind = this.state.rules.indexOf(val);
                 let tempArr = this.state.rules;
                 tempArr.splice(ind, 1);
+                console.log(tempArr);
                 this.setState({rules: tempArr});
             }
         })

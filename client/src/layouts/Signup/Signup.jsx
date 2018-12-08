@@ -9,7 +9,7 @@ class Signup extends Component {
     super(props);
 
     this.state = {
-      email: "",
+      username: "",
       password: "",
       first: "",
       last: "",
@@ -18,7 +18,7 @@ class Signup extends Component {
   }
 
   validateForm() {
-    return this.state.email.length > 0 && this.state.password.length > 0 
+    return this.state.username.length > 0 && this.state.password.length > 0 
     && this.state.first.length > 0 && this.state.last.length > 0;
   }
 
@@ -33,7 +33,7 @@ class Signup extends Component {
       const user= {
           "firstName": this.state.first,
           "lastName": this.state.last,
-          "email": this.state.email,
+          "username": this.state.username,
           "password": this.state.password
       }
       if( this.validateForm() == true )  {
@@ -87,12 +87,12 @@ class Signup extends Component {
                     onChange={this.handleChange}
                     />
                 </FormGroup>
-                <FormGroup validationState={this.getValidationState()} controlId="email" bsSize="large">
-                    <ControlLabel>Email</ControlLabel>
+                <FormGroup validationState={this.getValidationState()} controlId="username" bsSize="large">
+                    <ControlLabel>Username</ControlLabel>
                     <FormControl
                     autoFocus
-                    type="email"
-                    value={this.state.email}
+                    type="username"
+                    value={this.state.username}
                     onChange={this.handleChange}
                     />
                 </FormGroup>
@@ -113,7 +113,7 @@ class Signup extends Component {
                 >
                     Signup
                 </Button>
-                <p style={{color: 'red'}}>{this.state.error ? "This Email Already Exists." : ""}</p>
+                <p style={{color: 'red'}}>{this.state.error ? "This username Already Exists." : ""}</p>
                 </form>
             </div>
     );

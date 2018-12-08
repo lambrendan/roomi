@@ -6,7 +6,6 @@ import {  Route, Switch } from "react-router-dom";
 class AuthRoutes extends Component {
   constructor( props ) {
     super(props);
-    this.state = { email: "", password:"", bookmarks: [], favorites: [], env: "dev"}
   }
 
   render() {

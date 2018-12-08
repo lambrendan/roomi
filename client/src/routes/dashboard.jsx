@@ -4,7 +4,7 @@ import ParkingSchedule from "../views/ParkingSchedule/ParkingSchedule";
 import Rules from "../views/Rules/Rules";
 import Chores from "../views/Chores/Chores";
 import ShoppingList from "../views/ShoppingList/ShoppingList";
-import Polls from "../views/Polls/Polls";
+import Reminders from "../views/Reminders/Reminders";
 
 const dashboardRoutes = [
   {
@@ -40,7 +40,7 @@ const dashboardRoutes = [
   {
     path: "/dashboard/reminders",
     name: "Reminders",
-    component: Polls,
+    component: Reminders,
   },
   { redirect: true, path: "/", to: "/dashboard", name: "Dashboard" }
 ];

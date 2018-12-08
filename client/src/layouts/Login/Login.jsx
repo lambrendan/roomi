@@ -7,9 +7,8 @@ import "./Login.css";
 class Login extends Component {
   constructor(props) {
     super(props);
-
     this.state = {
-      email: "",
+      username: "",
       password: "",
       error: false
     };
@@ -24,7 +23,7 @@ class Login extends Component {
   handleOnClick = event =>{
     event.preventDefault();
     var constants = {
-      'email': this.state.email,
+      'username': this.state.username,
       'password': this.state.password 
     }
     axios.post("/signin", constants)
@@ -55,7 +54,7 @@ class Login extends Component {
   }
 
   validateForm() {
-    return this.state.email.length > 0 && this.state.password.length > 0;
+    return this.state.username.length > 0 && this.state.password.length > 0;
   }
 
   handleChange = event => {
@@ -72,12 +71,12 @@ class Login extends Component {
     return (
             <div className="Login">
                 <form onSubmit={this.handleSubmit}>
-                <FormGroup validationState={this.getValidationState()} controlId="email" bsSize="large">
-                    <ControlLabel>Email</ControlLabel>
+                <FormGroup validationState={this.getValidationState()} controlId="username" bsSize="large">
+                    <ControlLabel>Username</ControlLabel>
                     <FormControl
                     autoFocus
-                    type="email"
-                    value={this.state.email}
+                    type="text"
+                    value={this.state.username}
                     onChange={this.handleChange}
                     />
                 </FormGroup>

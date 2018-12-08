@@ -3,19 +3,19 @@ const connection = require('../database.js')
 const passwordHash = require('password-hash');
 
 const strategy = new LocalStrategy({
-    usernameField: 'email',
+    usernameField: 'username',
     passwordField: 'password',
     passReqToCallback: true
 },
-    function( req, email, password, done) {
-        const signinInfo = "SELECT email, password from users WHERE email =" + "\"" + email + "\"";
+    function( req, username, password, done) {
+        const signinInfo = "SELECT username, password from users WHERE username =" + "\"" + username + "\"";
         connection.query(signinInfo, function( err, result) {
             if( err ) {
                 return done(err);
             }
             else {
                 if( result == undefined || result.length == 0 ) {
-                    return done(null, false, { message: 'Incorrect email'} );
+                    return done(null, false, { message: 'Incorrect username'} );
                 }
                 else {
                     const isPassword = passwordHash.verify(password, result[0].password)

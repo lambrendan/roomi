@@ -12,7 +12,7 @@ passport.serializeUser((user, done) => {
 
 passport.deserializeUser((id, done) => {
     console.log('deserialized called');
-    var lookUpUser = "SELECT * from users WHERE email=" + "\"" + id.email + "\"";
+    var lookUpUser = "SELECT * from users WHERE username=" + "\"" + id.username + "\"";
     connection.query(lookUpUser, function( err, rows) {
         done(err, rows[0])
     })
