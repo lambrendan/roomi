@@ -259,7 +259,7 @@ class Chores extends React.Component {
                     this.setState({ background: newBg });
                 }
                 .bind(this),
-                500
+                200
             );
 
         }

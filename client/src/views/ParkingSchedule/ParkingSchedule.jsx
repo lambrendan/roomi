@@ -26,6 +26,7 @@ class ParkingSchedule extends React.Component {
             return <th key={i}>{item}</th>
         })
     }
+
     handleOnClick(){
         if(this.state.parkingSpots.includes(this.state.value)){
             this.setState({canAdd: false});
@@ -148,6 +149,9 @@ class ParkingSchedule extends React.Component {
                 let tempQueue = this.state.queue.filter(housemate => !(body.housemate === housemate));
                 tempQueue.unshift(body.housemate);
                 this.setState({queue: tempQueue});
+                var parkingSpots = this.state.parkingAssignments.map(item => item.parkingSpot);
+                this.setState({ parkingSpots: parkingSpots});
+
             }
             else{
                 console.log("failed to delete parking spot");
