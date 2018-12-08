@@ -18,7 +18,7 @@ class Dashboard extends Component {
     this.handleNotificationClick = this.handleNotificationClick.bind(this);
     this.state = {
       _notificationSystem: null,
-      currentMsg: 'hi',
+      currentMsg: '',
     };
     this.updateMessage = this.updateMessage.bind(this);
   }
@@ -28,6 +28,7 @@ class Dashboard extends Component {
       currentMsg: event
     })
   }
+  
   handleNotificationClick(position) {
     var color = Math.floor(Math.random() * 4 + 1);
     var level;

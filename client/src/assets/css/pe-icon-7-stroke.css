@@ -204,7 +204,7 @@
 .pe-7s-volume1:before {
 	content: "\e602";
 }
-.pe-7s-voicemail:before {
+.pe-7s-voicusername:before {
 	content: "\e603";
 }
 .pe-7s-video:before {

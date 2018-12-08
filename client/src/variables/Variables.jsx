@@ -323,7 +323,7 @@ const iconsArray = [
   "pe-7s-safe",
   "pe-7s-volume2",
   "pe-7s-volume1",
-  "pe-7s-voicemail",
+  "pe-7s-voicusername",
   "pe-7s-video",
   "pe-7s-user",
   "pe-7s-upload",

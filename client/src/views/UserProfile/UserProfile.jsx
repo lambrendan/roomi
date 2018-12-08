@@ -45,10 +45,10 @@ class UserProfile extends Component {
                           defaultValue: "michael23"
                         },
                         {
-                          label: "Email address",
-                          type: "email",
+                          label: "username address",
+                          type: "username",
                           bsClass: "form-control",
-                          placeholder: "Email"
+                          placeholder: "username"
                         }
                       ]}
                     />

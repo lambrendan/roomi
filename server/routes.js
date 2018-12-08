@@ -39,7 +39,7 @@ router.get('/auth', (req,res) => {
 })
 
 router.get('/checkHouse', (req,res) => {
-    var checkHousehold = 'SELECT householdID from users WHERE email=' + "\"" + req.user.email + "\"";
+    var checkHousehold = 'SELECT householdID from users WHERE username=' + "\"" + req.user.username + "\"";
     connection.query(checkHousehold, function(err, results) {
         if( err ) {
             res.json({
@@ -99,7 +99,7 @@ router.post('/newHouse', function(req,res) {
                         })
                     }
                     else {
-                        var insertHousehold = "UPDATE users SET householdID=" + "\""+ uniqueID + "\"" + "WHERE email="+ "\"" + req.user.email + "\"";
+                        var insertHousehold = "UPDATE users SET householdID=" + "\""+ uniqueID + "\"" + "WHERE username="+ "\"" + req.user.username + "\"";
                         connection.query(insertHousehold, function(err, results) {
                             if( err ) {
                                 res.json({
@@ -263,7 +263,7 @@ router.post('/joinHouse', function( req, res ) {
                         })
                     }
                     else {
-                        var insertHousehold = "UPDATE users SET householdID=" + "\""+ uniqueID + "\"" + "WHERE email="+ "\"" + req.user.email + "\"";
+                        var insertHousehold = "UPDATE users SET householdID=" + "\""+ uniqueID + "\"" + "WHERE username="+ "\"" + req.user.username + "\"";
                         connection.query(insertHousehold, function(err, results) {
                             if( err ) {
                                 res.json({
@@ -292,10 +292,10 @@ router.post('/signup', function(req,res ) {
     var user = {
         "firstName": req.body.firstName,
         "lastName": req.body.lastName,
-        "email": req.body.email,
+        "username": req.body.username,
         "password": hashedPass
     }
-    var lookUpUser = "SELECT * from users WHERE email=" + "\"" + req.body.email + "\"";
+    var lookUpUser = "SELECT * from users WHERE username=" + "\"" + req.body.username + "\"";
     connection.query(lookUpUser, function(err, results) {
         if( err ) {
             console.log(err);
@@ -323,7 +323,7 @@ router.post('/signup', function(req,res ) {
                 res.json({
                     "code": 409,
                     "failed": true,
-                    "message": "This email already exists"
+                    "message": "This username already exists"
                 })
             }
         }
@@ -1016,9 +1016,11 @@ router.post('/deleteRules', function(req,res) {
                 }
                 else {
                     res.json({
-                        "parking": results,
+                        "code": 200,
+                        "message": "Successfully deleted the rule",
+                        'body': req.body.rules,
+                        "failed": false
                     })
-                    console.log(results);
                 }
             })
         }

@@ -155,7 +155,7 @@ class ParkingSchedule extends React.Component {
     }
 
     roundRobin() {
-        setInterval(() => {
+        //setInterval(() => {
             let parkingAssignment = [];
             let i = 0;
             var housematequeue = this.state.queue;
@@ -201,7 +201,7 @@ class ParkingSchedule extends React.Component {
                 })
                 return data;
             })
-        }, 1000*60*60*24*7);
+        //}, 1000*60*60*24*7);
     }
 
     render() {

@@ -1,15 +1,16 @@
 import React from 'react';
 import { Button,
     FormGroup,FormControl, ControlLabel, Form } from 'react-bootstrap';
-import styles from './Polls.css';
+import styles from './Reminders.css';
 import axios from 'axios';
 
-class Polls extends React.Component {
+class Reminders extends React.Component {
     constructor(props){
         super(props);
         this.state = {
             value: '',
             currentMsg: '',
+            hasInserted: false
         }
         this.handleOnClickChange = this.handleOnClickChange.bind(this);
         this.componentDidMount = this.componentDidMount.bind(this);
@@ -22,7 +23,7 @@ class Polls extends React.Component {
         const data = {
             currentMsg: this.state.value,
         }
-        if(this.state.currentMsg.length === 0){
+        if(this.state.hasInserted === false){
             axios.post('/insertReminders', data)
             .then(res => {
                 if(res.data.failed === false){
@@ -66,11 +67,13 @@ class Polls extends React.Component {
                 if( res.data.currentMsg[0] === undefined ) {
                     this.setState({
                       currentMsg: "Welcome to Roomi!",
+                      hasInserted: false
                     })
                   }
                   else {
                     this.setState({ 
                       currentMsg: res.data.currentMsg[0].reminders,
+                      hasInserted: true
                     });
                   } 
                 this.props.updateMessage(this.state.currentMsg);
@@ -108,4 +111,4 @@ class Polls extends React.Component {
     }
 }
 
-export default Polls;
+export default Reminders;
