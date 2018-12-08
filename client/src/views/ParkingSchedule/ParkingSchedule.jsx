@@ -13,6 +13,7 @@ class ParkingSchedule extends React.Component {
             housemates_with_parking: new Set(), //set
             queue: [],
             parkingSpots: [],
+            canAdd: true,
         };
         this.handleOnClick = this.handleOnClick.bind(this);
         this.handleOnChange = this.handleOnChange.bind(this);
@@ -26,23 +27,26 @@ class ParkingSchedule extends React.Component {
         })
     }
     handleOnClick(){
+        if(this.state.parkingSpots.includes(this.state.value)){
+            this.setState({canAdd: false});
+            return;
+        }
+        else{
+            this.setState({canAdd: true});
+        }
         const housemates = Array.from(this.state.all_housemates);
         let housemateToCheck = "";
         let queue = this.state.queue;
         console.log(queue);
-        /*if(this.state.parkingAssignments.length % this.state.all_housemates.size === 0){
-            let temp = queue.shift();
-            queue.push(temp);
-            this.setState({queue: queue});
-            console.log("yes");
-        }*/
         if(this.state.housemates_with_parking.size === 0) {
             housemateToCheck = housemates[Math.floor(Math.random() * housemates.length)];
             let housemateSet = new Set();
+            housemateSet.add(housemateToCheck);
             this.setState({housemates_with_parking : housemateSet});
             queue = queue.filter( housemate => !housemateSet.has(housemate));
             queue.push(housemateToCheck);
             this.setState({queue: queue});
+            console.log("dicks");
         }
         else{
             housemateToCheck = queue.shift();
@@ -159,6 +163,7 @@ class ParkingSchedule extends React.Component {
             let parkingAssignment = [];
             let i = 0;
             var housematequeue = this.state.queue;
+            console.log(housematequeue);
             let parkingAssignments = this.state.parkingAssignments;
             let length = this.state.parkingAssignments.length;
             if(this.state.parkingAssignments.length < this.state.housemates_with_parking.size){
@@ -168,7 +173,13 @@ class ParkingSchedule extends React.Component {
                 let temp = housematequeue.shift();
                 housematequeue.push(temp);
                 this.setState({queue: housematequeue});
-                //console.log("yes");
+                console.log("wow");
+            }
+            else if(this.state.parkingAssignments.length % this.state.all_housemates.size === 0){
+                let temp = housematequeue.shift();
+                housematequeue.push(temp);
+                this.setState({queue: housematequeue});
+                console.log("yes");
             }
             //ar housemates_with_parking_old = [...this.state.housemates_with_parking];
             while(parkingAssignment.length < length){
@@ -179,6 +190,8 @@ class ParkingSchedule extends React.Component {
                 }
                 parkingAssignment.push(data);
                 housematequeue.push(housemateNew);
+                var housematesHasParking = new Set(parkingAssignment.map(item => item.housemate));
+                this.setState({ housemates_with_parking: new Set(housematesHasParking)});
                 this.setState({queue: housematequeue});
                 this.setState({ parkingAssignments: parkingAssignment});
                 i+=1;
@@ -231,6 +244,7 @@ class ParkingSchedule extends React.Component {
                 <input type="text" onChange={this.handleOnChange} id="parkingInput"/>
                 <Button onClick={this.handleOnClick} disabled={this.state.value.length === 0 ? true : false}>Add Parking Spot</Button>
                 <Button onClick={this.roundRobin}>Shuffle Parking Assignments></Button>
+                <p style={{color: 'red'}}>{this.state.canAdd ? "" :  "Error: Can't Add Same Parking Spot" }</p>
             </div>
         )
     }
