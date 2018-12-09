@@ -23,49 +23,19 @@ class Chores extends React.Component {
         this.getChores = this.getChores.bind(this);
         this.getChoresAgain = this.getChoresAgain.bind(this);
     }
+    
     componentDidMount(){
         axios.get('/housemates')
         .then( res => {
-            axios.get('/chores')
-            .then( resTwo => {
-                if(resTwo.data.failed == true){
-                    console.log("failed");
-                }
-                else{
-                    let chores_assignees_list = resTwo.data.chores.map(item => {
-                        const data = {
-                            'task': item.chore,
-                            'assignee': item.housemate,
-                            'isDone': item.isDone,
-                        }
-                        return data;
-                    });
-                    var backgroundColors = chores_assignees_list.map( item => {
-                        if(item.isDone === 0){
-                            return "#FFFFFF";
-                        }
-                        else{
-                            return "#8CC152";
-                        }
-                    })
-                    let housemate_list = res.data.housemates.map(item =>item.housemate);
-                    let orderRoommates = shuffle( housemate_list, {'copy': true})
-                    this.setState({
-                        housemates: housemate_list,
-                        chores_assignees: chores_assignees_list,
-                        possibleAssigned: orderRoommates,
-                        background: backgroundColors
-                    });
-                    console.log(this.state);
-                }
-            })
-            .catch( err => {
-                throw err;
-            })            
+            let housemate_list = res.data.housemates.map(item => item.housemate);
+            this.setState({ housemates: new Set(housemate_list)});
+            //console.log(this.state.housemates);
         })
         .catch( err => {
             throw err;
         })
+        this.getChores();
+        this.mapBackgroundColor();
     }
 
     handleOnClick(){
