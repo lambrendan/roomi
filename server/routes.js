@@ -904,7 +904,8 @@ router.post('/deleteParking', function(req,res){
             })
         }
         else {
-            var deleteFromDB = 'DELETE FROM ' + results[0].houseName + '_parking WHERE parkingSpot=' + "\"" + req.body.parkingSpot + "\"" +", housemate=" + "\"" + req.body.housemate + "\"" ;
+            var deleteFromDB = 'DELETE FROM ' + results[0].houseName + '_parking WHERE parkingSpot=' + "\"" + req.body.parkingSpot + "\"" +" and housemate=" + "\"" + req.body.housemate + "\"" ;
+            console.log(deleteFromDB);
             connection.query(deleteFromDB, function(err, results) {
                 if( err ) {
                     res.json({
