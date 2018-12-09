@@ -71,7 +71,7 @@ class Login extends Component {
     return (
             <div className="Login">
                 <form onSubmit={this.handleSubmit}>
-                <FormGroup validationState={this.getValidationState()} controlId="username" bsSize="large">
+                <FormGroup controlId="username" bsSize="large">
                     <ControlLabel>Username</ControlLabel>
                     <FormControl
                     autoFocus

@@ -75,7 +75,7 @@ class JoinHousehold extends Component {
         return(
             <div className="JoinHouseHold">
                 <form>
-                <FormGroup validationState={this.getValidationState()} controlId="householdID" bsSize="large">
+                <FormGroup controlId="householdID" bsSize="large">
                     <ControlLabel>Household ID</ControlLabel>
                     <FormControl
                     autoFocus
