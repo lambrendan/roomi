@@ -1,7 +1,7 @@
 import React from 'react';
 import { Table, Button } from "react-bootstrap";
 import axios from "axios";
-import shuffle from 'shuffle-array';
+
 
 class Chores extends React.Component {
     constructor(props){
