@@ -39,7 +39,7 @@ const dashboardRoutes = [
   },
   {
     path: "/dashboard/reminders",
-    name: "Reminders",
+    name: "Reminder",
     component: Reminders,
   },
   { redirect: true, path: "/", to: "/dashboard", name: "Dashboard" }
