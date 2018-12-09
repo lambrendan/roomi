@@ -14,12 +14,14 @@ class ParkingSchedule extends React.Component {
             queue: [],
             parkingSpots: [],
             canAdd: true,
+            didMount: false,
         };
         this.handleOnClick = this.handleOnClick.bind(this);
         this.handleOnChange = this.handleOnChange.bind(this);
         this.componentDidMount = this.componentDidMount.bind(this);
         this.roundRobin = this.roundRobin.bind(this);
         this.getParkingSpots = this.getParkingSpots.bind(this);
+        this.deleteParking = this.deleteParking.bind(this);
     }
     headingToColumn(){
         return ["", "Parking Spot", "Assignee"].map((item, i) =>{
@@ -47,7 +49,6 @@ class ParkingSchedule extends React.Component {
             queue = queue.filter( housemate => !housemateSet.has(housemate));
             queue.push(housemateToCheck);
             this.setState({queue: queue});
-            console.log("dicks");
         }
         else{
             housemateToCheck = queue.shift();
@@ -95,6 +96,8 @@ class ParkingSchedule extends React.Component {
             throw err;
         })
         this.getParkingSpots();
+        console.log(this.state.queue);
+        this.setState({didMount: true});
     }
 
     getParkingSpots() {
@@ -116,6 +119,7 @@ class ParkingSchedule extends React.Component {
             housematesHasParking = [...housematesHasParking];
             var correctQueueOrder = noParking.concat(housematesHasParking);
             this.setState({ queue: correctQueueOrder});
+            console.log(correctQueueOrder);
         
         })
         .catch( err => {
@@ -151,7 +155,6 @@ class ParkingSchedule extends React.Component {
                 this.setState({queue: tempQueue});
                 var parkingSpots = this.state.parkingAssignments.map(item => item.parkingSpot);
                 this.setState({ parkingSpots: parkingSpots});
-
             }
             else{
                 console.log("failed to delete parking spot");
@@ -164,10 +167,10 @@ class ParkingSchedule extends React.Component {
 
     roundRobin() {
         //setInterval(() => {
+            console.log(this.state.queue);
             let parkingAssignment = [];
             let i = 0;
             var housematequeue = this.state.queue;
-            console.log(housematequeue);
             let parkingAssignments = this.state.parkingAssignments;
             let length = this.state.parkingAssignments.length;
             if(this.state.parkingAssignments.length < this.state.housemates_with_parking.size){
@@ -177,13 +180,16 @@ class ParkingSchedule extends React.Component {
                 let temp = housematequeue.shift();
                 housematequeue.push(temp);
                 this.setState({queue: housematequeue});
-                console.log("wow");
             }
             else if(this.state.parkingAssignments.length % this.state.all_housemates.size === 0){
                 let temp = housematequeue.shift();
                 housematequeue.push(temp);
                 this.setState({queue: housematequeue});
-                console.log("yes");
+            }
+            if(this.state.didMount){
+                let temp = housematequeue.shift();
+                housematequeue.push(temp);
+                this.setState({didMount: false});
             }
             //ar housemates_with_parking_old = [...this.state.housemates_with_parking];
             while(parkingAssignment.length < length){
@@ -200,8 +206,10 @@ class ParkingSchedule extends React.Component {
                 this.setState({ parkingAssignments: parkingAssignment});
                 i+=1;
             }
+            console.log(this.state.queue);
             //console.log(parkingAssignment);
             parkingAssignment.map( data => {
+                console.log(data);
                 axios.post('/shuffleParking', data)
                 .then( res => {
                     if(res.data.failed === false){
