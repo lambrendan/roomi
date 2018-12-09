@@ -18,7 +18,7 @@ class Chores extends React.Component {
         this.handleOnClick = this.handleOnClick.bind(this);
         this.handleOnChange = this.handleOnChange.bind(this);
         this.componentDidMount = this.componentDidMount.bind(this);
-        this.reshuffle = this.reshuffle.bind(this);
+        //this.reshuffle = this.reshuffle.bind(this);
         this.getChores = this.getChores.bind(this);
         this.getChoresAgain = this.getChoresAgain.bind(this);
     }
@@ -245,7 +245,8 @@ class Chores extends React.Component {
             }
         }
         if(count === this.state.isDone.length && this.state.isDone.length != 0){
-            this.reshuffle();
+            //this.reshuffle();
+            this.clearMarking();
             let newBg = this.state.isDone.map( item => {
                 if(item === 0){
                     return "#FFFFFF";
@@ -265,7 +266,56 @@ class Chores extends React.Component {
         }
     }
 
-    reshuffle() {
+    clearMarking(){
+        let choresAssignment = [];
+        let i = 0;
+        let choresAssignments = this.state.chores_assignees;
+        let length = this.state.chores_assignees.length;
+        if(this.state.chores_assignees.length < this.state.housemates_with_chores.size){
+            length = this.state.housemates_with_chores.size;
+        }
+        //ar housemates_with_parking_old = [...this.state.housemates_with_parking];
+        while(choresAssignment.length < length){
+            let done = choresAssignments[i].isDone;
+            if(done === 0){
+                done = 1;
+            }
+            else{
+                done = 0;
+            }
+            const data = {
+                "chore": choresAssignments[i].chore,
+                "housemate": choresAssignments[i].housemate,
+                "isDone": done,
+            }
+            choresAssignment.push(data);
+            this.setState({ chores_assignees: choresAssignment});
+            let tempIsDone = this.state.isDone;
+            tempIsDone[i] = 0;
+            this.setState({isDone: tempIsDone});
+            i+=1;
+        }
+        //console.log(parkingAssignment);
+        choresAssignment.map( data => {
+            axios.post('/shuffleChores', data)
+            .then( res => {
+                if(res.data.failed === false){
+                    console.log("success reshuffling");
+
+                }
+                else{
+                    console.log("failed to reassign parking")
+                }
+            })
+            .catch( err => {
+                console.log("failed");
+                throw err;
+            })
+            return data;
+        })
+    }
+
+    /*reshuffle() {
             let choresAssignment = [];
             let i = 0;
             var housematequeue = this.state.queue;
@@ -328,7 +378,7 @@ class Chores extends React.Component {
                 })
                 return data;
             })
-    }
+    }*/
 
     render() {
         return(
