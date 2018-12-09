@@ -180,6 +180,7 @@ class Chores extends React.Component {
                 let tempQueue = this.state.queue.filter(housemate => !(body.housemate === housemate));
                 tempQueue.unshift(body.housemate);
                 this.setState({queue: tempQueue});
+                this.getChoresAgain();
                 //this.mapBackgroundColor();
 
             }
