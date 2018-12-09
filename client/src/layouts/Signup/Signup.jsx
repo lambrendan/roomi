@@ -87,7 +87,7 @@ class Signup extends Component {
                     onChange={this.handleChange}
                     />
                 </FormGroup>
-                <FormGroup validationState={this.getValidationState()} controlId="username" bsSize="large">
+                <FormGroup controlId="username" bsSize="large">
                     <ControlLabel>Username</ControlLabel>
                     <FormControl
                     autoFocus
@@ -113,7 +113,7 @@ class Signup extends Component {
                 >
                     Signup
                 </Button>
-                <p style={{color: 'red'}}>{this.state.error ? "This username Already Exists." : ""}</p>
+                <p style={{color: 'red'}}>{this.state.error ? "This username already exists." : ""}</p>
                 </form>
             </div>
     );

@@ -32,9 +32,11 @@ class InitHousehold extends Component {
                 'uID': this.state.householdID,
                 'name': this.state.name
             }
+            console.log(constants);
             axios.post("/newHouse", constants)
             .then( (res) => {
-                console.log(res);
+                console.log(res.data);
+                console.log(this.state);
                 if(res.data.failed === false) {
                     this.props.updateHousehold(true);
                     this.props.history.push('/dashboard')
@@ -47,6 +49,7 @@ class InitHousehold extends Component {
 
             })
             .catch( err => {
+                console.log(err);
                 this.setState({
                     error: true
                 })
@@ -84,7 +87,7 @@ class InitHousehold extends Component {
                     onChange={this.handleOnChange}
                     />
                 </FormGroup>
-                <FormGroup validationState={this.getValidationState()} controlId="householdID" bsSize="large">
+                <FormGroup controlId="householdID" bsSize="large">
                     <ControlLabel>Household ID</ControlLabel>
                     <FormControl
                     autoFocus
@@ -102,7 +105,7 @@ class InitHousehold extends Component {
                 >
                     Create Household!
                 </Button>
-                <p style={{color: 'red'}}>{this.state.error ? "Error: This Household ID already exists": ""}</p>
+                <p style={{color: 'red'}}>{this.state.error ? "Error: This Household ID/Household Name already exists": ""}</p>
                 </form>
             </div>
         )
