@@ -619,7 +619,39 @@ router.post('/markChore', function(req,res){
             })
         }
     })
+})
 
+router.post('/shuffleChores', function(req, res) {
+    var getHouse = 'SELECT houseName from household where uniqueID=' + "\"" + req.user.householdID + "\"" 
+    connection.query(getHouse, function(err,results){
+        if(err) {
+            res.json({
+                "code": 400,
+                "failed": true,
+                "message": err
+            })
+        }
+        else {
+            var updateChoresAssignments = 'UPDATE ' + results[0].houseName + '_chores SET housemate=' + "\"" + req.body.housemate + "\"" + ", isDone=" +req.body.isDone+ " where chore=" + "\"" + req.body.chore + "\"";
+            console.log(updateChoresAssignments);
+            connection.query(updateChoresAssignments, function(err, results){
+                if( err ) {
+                    res.json({
+                        "code": 400,
+                        "failed": true,
+                        "message": "Couldn't make query to update chores"
+                    });
+                }
+                else {
+                    res.json({
+                        "code": 200,
+                        "failed": false,
+                        "message": "Made query to update chores assginments"
+                    })
+                }
+            })
+        }
+    })
 })
 
 router.get('/bills', function(req,res) {
@@ -897,7 +929,7 @@ router.post('/deleteParking', function(req,res){
             })
         }
         else {
-            var deleteFromDB = 'DELETE FROM ' + results[0].houseName + '_parking WHERE parkingSpot=' + "\"" + req.body.parkingSpot + "\""; //+"and housemate=" + "\"" + req.body.housemate + "\"" ;
+            var deleteFromDB = 'DELETE FROM ' + results[0].houseName + '_parking WHERE parkingSpot=' + "\"" + req.body.parkingSpot + "\"" +", housemate=" + "\"" + req.body.housemate + "\"" ;
             connection.query(deleteFromDB, function(err, results) {
                 if( err ) {
                     res.json({

@@ -9,13 +9,19 @@ class Chores extends React.Component {
         this.state = {
             value: '',
             chores_assignees: [],
-            housemates: [],
-            possibleAssigned: [],
-            background: []
+            housemates: new Set(),
+            assignees: [],
+            heading: [],
+            isDone: [],
+            housemates_with_chores: new Set(),
+            queue: [],
         };
         this.handleOnClick = this.handleOnClick.bind(this);
         this.handleOnChange = this.handleOnChange.bind(this);
         this.componentDidMount = this.componentDidMount.bind(this);
+        //this.reshuffle = this.reshuffle.bind(this);
+        this.getChores = this.getChores.bind(this);
+        this.getChoresAgain = this.getChoresAgain.bind(this);
     }
     componentDidMount(){
         axios.get('/housemates')
@@ -63,105 +69,82 @@ class Chores extends React.Component {
     }
 
     handleOnClick(){
-        const housemates = this.state.housemates
-        if( this.state.possibleAssigned === undefined || this.state.possibleAssigned.length === 0) {
-            let orderRoommates = shuffle( housemates, {'copy': true})
-            this.setState({ possibleAssigned: orderRoommates }, () => {
-                let currArray = this.state.possibleAssigned;
-                var constants = {
-                    'choresID': this.state.value,
-                    'housemate': currArray.pop(),
-                    'isDone': 0,
-                }
-                var stateObject = {
-                    'task': constants.choresID,
-                    'assignee': constants.housemate,
-                    'isDone': constants.isDone
-                }
-                axios.post('/chores', constants)
-                .then( res => {
-                    if(res.data.failed == false){
-                        this.getChores();
-                        // let choresArr = this.state.chores_assignees;
-                        // choresArr.push(stateObject);
-                        // let bg = this.state.background;
-                        // let white = "#FFFFFF";
-                        // bg.push( white );
-                        // this.setState({ chores_assignees: choresArr, background: bg});
-                    }
-                    else{
-                        console.log("failed to post chores");
-                    }
-                })
-                .catch( err => {
-                    throw err;
-                })
-                document.getElementById('taskInput').value = '';
-            })
+        const housemates = Array.from(this.state.housemates);
+        let housemateToCheck = "";
+        let queue = this.state.queue;
+        if(this.state.housemates_with_chores.size === 0) {
+            housemateToCheck = housemates[Math.floor(Math.random() * housemates.length)];
+            let housemateSet = new Set();
+            housemateSet.add(housemateToCheck);
+            this.setState({housemates_with_chores : housemateSet});
+            queue = queue.filter( housemate => !housemateSet.has(housemate));
+            queue.push(housemateToCheck);
+            this.setState({queue: queue});
+            console.log(queue);
         }
-        else {
-            let currArray = this.state.possibleAssigned;
-            var constants = {
-                'choresID': this.state.value,
-                'housemate': currArray.pop(),
-                'isDone': 0,
+        else{
+            housemateToCheck = queue.shift();
+            queue.push(housemateToCheck);
+            console.log(queue);
+            this.setState({queue: queue});
+        }
+        var constants = {
+            'choresID': this.state.value,
+            'housemate': housemateToCheck,
+            'isDone': 0,
+        }
+        axios.post('/chores', constants)
+        .then( res => {
+            if(res.data.failed == false){
+                let choresArr = this.state.chores_assignees;
+                choresArr.push(constants);
+                this.setState({ chores_assignees: choresArr});
+                console.log(choresArr);
+                console.log("added to chores successfully");
+                this.getChoresAgain();
+                //this.setState({value : ''});
             }
             var stateObject = {
                 'task': constants.choresID,
                 'assignee': constants.housemate,
                 'isDone': constants.isDone
             }
-            axios.post('/chores', constants)
-            .then( res => {
-                if(res.data.failed == false){
-                    this.getChores();
-                    // let choresArr = this.state.chores_assignees;
-                    // choresArr.push(stateObject);
-                    // let bg = this.state.background;
-                    // let white = "#FFFFFF";
-                    // bg.push( white )
-                    // this.setState({ chores_assignees: choresArr, background: bg});
-                }
-                else{
-                    console.log("failed to post chores");
-                }
-            })
-            .catch( err => {
-                throw err;
-            })
-            document.getElementById('taskInput').value = '';
-        }
-        // let orderRoommates = shuffle( housemates, {'copy': true})
-        // console.log(orderRoommates);
-        // console.log(housemates);
-        // let housemateToCheck = housemates[Math.floor(Math.random() * housemates.length)];
-        // // if(this.state.housemates.size !== this.state.housemates_with_chores.size) {
-        // //     //housemateToCheck = housemates[Math.floor(Math.random() * housemates.length)];
-        // //     while(this.state.housemates_with_chores.has(housemateToCheck)){
-        // //         housemateToCheck = housemates[Math.floor(Math.random() * housemates.length)];
-        // //     }
-        // // }
-        // var constants = {
-        //     'choresID': this.state.value,
-        //     'housemate': housemateToCheck,
-        //     'isDone': 0,
-        // }
-        // axios.post('/chores', constants)
-        // .then( res => {
-        //     if(res.data.failed == false){
-        //         let choresArr = this.state.chores_assignees;
-        //         choresArr.push(constants);
-        //         this.setState({ chores_assignees_list: choresArr});
-        //         this.getChores();
-        //     }
-        //     else{
-        //         console.log("failed to post chores");
-        //     }
-        // })
-        // .catch( err => {
-        //     throw err;
-        // })
-        // document.getElementById('taskInput').value = '';
+        })
+        .catch( err => {
+            throw err;
+        })
+        document.getElementById('taskInput').value = '';
+        this.setState({value : ''});
+    }
+
+    getChoresAgain(){
+        axios.get('/chores')
+        .then( res => {
+            if(res.data.failed == true){
+                console.log("failed");
+            }
+            else{
+                //let assignees_list = res.data.chores.map(item => item.housemate);
+                let chores_assignees_list = res.data.chores.map(item => {
+                    const data = {
+                        'chore': item.chore,
+                        'housemate': item.housemate,
+                        'isDone': item.isDone,
+                    }
+                    return data;
+                });
+                console.log(chores_assignees_list);
+                this.setState({ chores_assignees: chores_assignees_list });
+                var housematesHasChores = new Set(chores_assignees_list.map(item => item.assignee));
+                this.setState({ housemates_with_chores: housematesHasChores});
+                let isDone = chores_assignees_list.map( item => item.isDone);
+                this.setState({isDone: isDone});
+                this.mapBackgroundColor();
+            }
+        })
+        .catch( err => {
+            throw err;
+        })
     }
 
     getChores(){
@@ -174,22 +157,23 @@ class Chores extends React.Component {
                 //let assignees_list = res.data.chores.map(item => item.housemate);
                 let chores_assignees_list = res.data.chores.map(item => {
                     const data = {
-                        'task': item.chore,
-                        'assignee': item.housemate,
+                        'chore': item.chore,
+                        'housemate': item.housemate,
                         'isDone': item.isDone,
                     }
                     return data;
                 });
-                var backgroundColors = chores_assignees_list.map( item => {
-                    if(item.isDone === 0){
-                        return "#FFFFFF";
-                    }
-                    else{
-                        return "#8CC152";
-                    }
-                })
-                this.setState({ chores_assignees: chores_assignees_list, background: backgroundColors});
-
+                this.setState({ chores_assignees: chores_assignees_list });
+                var housematesHasChores = new Set(chores_assignees_list.map(item => item.housemate));
+                this.setState({ housemates_with_chores: housematesHasChores});
+                let isDone = chores_assignees_list.map( item => item.isDone);
+                this.setState({isDone: isDone});
+                var noChores = [...this.state.housemates].filter( housemate => !this.state.housemates_with_chores.has(housemate));
+                housematesHasChores = [...housematesHasChores];
+                var correctQueueOrder = noChores.concat(housematesHasChores);
+                this.setState({ queue: correctQueueOrder});
+                this.mapBackgroundColor();
+                console.log(correctQueueOrder);
             }
         })
         .catch( err => {
@@ -209,18 +193,27 @@ class Chores extends React.Component {
         axios.post('/deleteChore', body)
         .then( res => {
             if( res.data.failed === false ) {
-                this.getChores();
-                // let val = null;
-                // for(let i of this.state.chores_assignees) {
-                //     if (i.task === res.data.task && i.assignee === res.data.assignee) {
-                //         val = i;
-                //         break;
-                //     }
-                // }
-                // let ind = this.state.chores_assignees.indexOf(val);   
-                // let tempArr = this.state.chores_assignees;
-                // tempArr.splice(ind, 1);
-                // this.setState({chores_assignees: tempArr});
+                let val = null;
+                for(let i of this.state.chores_assignees) {
+                    if (i.task === res.data.task && i.assignee === res.data.assignee) {
+                        val = i;
+                        break;
+                    }
+                }
+                let ind = this.state.chores_assignees.indexOf(val);   
+                let tempArr = this.state.chores_assignees;
+                tempArr.splice(ind, 1);
+                this.setState({chores_assignees: tempArr});
+                let tempSet = this.state.housemates_with_chores;
+                tempSet.delete(body.housemate);
+                this.setState({housemates_with_chores: tempSet});
+                let newIsDone = tempArr.map(item => item.isDone);
+                this.setState({isDone: newIsDone});
+                let tempQueue = this.state.queue.filter(housemate => !(body.housemate === housemate));
+                tempQueue.unshift(body.housemate);
+                this.setState({queue: tempQueue});
+                //this.mapBackgroundColor();
+
             }
             else{
                 console.log("failed to delete chore");
@@ -247,6 +240,9 @@ class Chores extends React.Component {
                 axios.post('/markChore', constants)
                 .then( res => {
                     if( res.data.failed === false ) {
+                        this.mapBackgroundColor();
+                        //this.reshuffle();
+                        console.log("success marking chore");
                         this.getChores();
                     }
                 })
@@ -276,10 +272,6 @@ class Chores extends React.Component {
             }
         })
         this.setState({ background: backgroundColors });
-        this.reshuffle();
-    }
-
-    reshuffle(){
         let count = 0;
         for(let i of this.state.isDone){
             if(i === 1){
@@ -287,52 +279,140 @@ class Chores extends React.Component {
             }
         }
         if(count === this.state.isDone.length && this.state.isDone.length != 0){
-            this.setState( {housemates_with_chores: new Set()});
-            var newTasks = this.state.chores_assignees.map(item =>{
-                const housemates = Array.from(this.state.housemates);
-                let housemateToCheck = housemates[Math.floor(Math.random() * housemates.length)];
-                if(this.state.housemates.size !== this.state.housemates_with_chores.size) {
-                    //housemateToCheck = housemates[Math.floor(Math.random() * housemates.length)];
-                    while(this.state.housemates_with_chores.has(housemateToCheck)){
-                        housemateToCheck = housemates[Math.floor(Math.random() * housemates.length)];
-                    }
+            //this.reshuffle();
+            this.clearMarking();
+            let newBg = this.state.isDone.map( item => {
+                if(item === 0){
+                    return "#FFFFFF";
                 }
-                var newAssignee = housemateToCheck;
-                let housematesChoresSet = this.state.housemates_with_chores;
-                housematesChoresSet.add(newAssignee);
-                this.setState({ housemates_with_chores: housematesChoresSet});
+                else{
+                    return "#8CC152";
+                }
+            })
+            setTimeout(
+                function() {
+                    this.setState({ background: newBg });
+                }
+                .bind(this),
+                200
+            );
+
+        }
+    }
+
+    clearMarking(){
+        let choresAssignment = [];
+        let i = 0;
+        let choresAssignments = this.state.chores_assignees;
+        let length = this.state.chores_assignees.length;
+        if(this.state.chores_assignees.length < this.state.housemates_with_chores.size){
+            length = this.state.housemates_with_chores.size;
+        }
+        //ar housemates_with_parking_old = [...this.state.housemates_with_parking];
+        while(choresAssignment.length < length){
+            let done = choresAssignments[i].isDone;
+            if(done === 0){
+                done = 1;
+            }
+            else{
+                done = 0;
+            }
+            const data = {
+                "chore": choresAssignments[i].chore,
+                "housemate": choresAssignments[i].housemate,
+                "isDone": done,
+            }
+            choresAssignment.push(data);
+            this.setState({ chores_assignees: choresAssignment});
+            let tempIsDone = this.state.isDone;
+            tempIsDone[i] = 0;
+            this.setState({isDone: tempIsDone});
+            i+=1;
+        }
+        //console.log(parkingAssignment);
+        choresAssignment.map( data => {
+            axios.post('/shuffleChores', data)
+            .then( res => {
+                if(res.data.failed === false){
+                    console.log("success reshuffling");
+
+                }
+                else{
+                    console.log("failed to reassign parking")
+                }
+            })
+            .catch( err => {
+                console.log("failed");
+                throw err;
+            })
+            return data;
+        })
+    }
+
+    /*reshuffle() {
+            let choresAssignment = [];
+            let i = 0;
+            var housematequeue = this.state.queue;
+            let choresAssignments = this.state.chores_assignees;
+            let length = this.state.chores_assignees.length;
+            if(this.state.chores_assignees.length < this.state.housemates_with_chores.size){
+                length = this.state.housemates_with_chores.size;
+            }
+            if(this.state.chores_assignees.length === this.state.housemates.size){
+                let temp = housematequeue.shift();
+                housematequeue.push(temp);
+                this.setState({queue: housematequeue});
+                console.log("wow");
+            }
+            else if(this.state.chores_assignees.length % this.state.housemates.size === 0){
+                let temp = housematequeue.shift();
+                housematequeue.push(temp);
+                this.setState({queue: housematequeue});
+                console.log("yes");
+            }
+            //ar housemates_with_parking_old = [...this.state.housemates_with_parking];
+            while(choresAssignment.length < length){
+                let housemateNew = housematequeue.shift();
+                let done = choresAssignments[i].isDone;
+                if(done === 0){
+                    done = 1;
+                }
+                else{
+                    done = 0;
+                }
                 const data = {
-                    "task": item.task,
-                    "assignee": newAssignee,
-                    "isDone": 0,
+                    "chore": choresAssignments[i].chore,
+                    "housemate": housemateNew,
+                    "isDone": done,
                 }
-                const body = {
-                    "chore": item.task,
-                    "housemate": newAssignee,
-                    "isDone": 0,
-                }
-                axios.post('/updateChores', body)
+                choresAssignment.push(data);
+                housematequeue.push(housemateNew);
+                this.setState({queue: housematequeue});
+                this.setState({ chores_assignees: choresAssignment});
+                let tempIsDone = this.state.isDone;
+                tempIsDone[i] = 0;
+                this.setState({isDone: tempIsDone});
+                i+=1;
+            }
+            //console.log(parkingAssignment);
+            choresAssignment.map( data => {
+                axios.post('/shuffleChores', data)
                 .then( res => {
-                    if(res.data.failed == false){
-                        console.log("success reassigning");
+                    if(res.data.failed === false){
+                        console.log("success reshuffling");
+
                     }
                     else{
-                        console.log("failed to reassign");
+                        console.log("failed to reassign parking")
                     }
                 })
                 .catch( err => {
+                    console.log("failed");
                     throw err;
                 })
                 return data;
             })
-            this.setState({chores_assignees: newTasks});
-            var newIsDone = newTasks.map(item => item.isDone);
-            this.setState({isDone: newIsDone});
-            alert("Reassigning Chores!");
-            this.mapBackgroundColor();
-            console.log("reshuffled");
-        }
-    }
+    }*/
 
     render() {
         return(
@@ -347,11 +427,11 @@ class Chores extends React.Component {
                     {this.state.chores_assignees.map((item, i) => {
                         console.log(item);
                         return (
-                            <tr key={item.task+item.assignee} style={{backgroundColor: this.state.background[i]}}>
-                                <td key={"chore"} onClick={() => this.markChoreAsDone(item.task, item.assignee)}>{item.task}</td>
-                                <td key={"housemate"}>{item.assignee}</td>
+                            <tr key={item.chore+item.housemate} style={{backgroundColor: this.state.background[i]}}>
+                                <td key={"chore" + i} onClick={() => this.markChoreAsDone(item.chore, item.housemate)}>{item.chore}</td>
+                                <td key={"housemate" + i}>{item.housemate}</td>
                                 <td>
-                                    <Button onClick={ () => this.deleteChore(item.task, item.assignee)}>Delete</Button>
+                                    <Button onClick={ () => this.deleteChore(item.chore, item.housemate)}>Delete</Button>
                                 </td>
                             </tr>
                         )
