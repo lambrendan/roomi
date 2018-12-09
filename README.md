@@ -43,7 +43,8 @@ You can view our application at localhost:3000
 
 Known Bugs:
 1. For shuffling parking, if there are more parking spots than housemates and the user arrives from the Parking Schedule page
-from a different page, the user will need to click twice in order to for the shuffling of the parking assignments to occur.
+from a different page, the user will need to click twice on the Shuffle Parking Assignments button in order to for the shuffling of the
+parking assignments to occur.
 
 Technical Support:
 Brendan Lam - Software Development Lead
