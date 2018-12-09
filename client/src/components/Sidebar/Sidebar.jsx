@@ -19,8 +19,6 @@ class Sidebar extends Component {
     };
   }
   activeRoute(routeName) {
-    console.log(this.props.location.pathname)
-    console.log(routeName);
     return this.props.location.pathname === routeName ? "active" : "";
     //console.log(routeName + ": "+ this.props.location.pathname.indexOf(routeName));
     return this.props.location.pathname.indexOf(routeName) > -1 ? "active" : "";

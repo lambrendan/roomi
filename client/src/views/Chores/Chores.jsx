@@ -1,6 +1,7 @@
 import React from 'react';
 import { Table, Button } from "react-bootstrap";
 import axios from "axios";
+import shuffle from 'shuffle-array';
 
 class Chores extends React.Component {
     constructor(props){
@@ -22,6 +23,7 @@ class Chores extends React.Component {
         this.getChores = this.getChores.bind(this);
         this.getChoresAgain = this.getChoresAgain.bind(this);
     }
+    
     componentDidMount(){
         axios.get('/housemates')
         .then( res => {
@@ -70,8 +72,10 @@ class Chores extends React.Component {
                 this.getChoresAgain();
                 //this.setState({value : ''});
             }
-            else{
-                console.log("failed to post chores");
+            var stateObject = {
+                'task': constants.choresID,
+                'assignee': constants.housemate,
+                'isDone': constants.isDone
             }
         })
         .catch( err => {
@@ -227,8 +231,8 @@ class Chores extends React.Component {
     }
 
     mapBackgroundColor(){
-        var backgroundColors = this.state.isDone.map( item => {
-            if(item === 0){
+        var backgroundColors = this.state.chores_assignees.map( item => {
+            if(item.isDone === 0){
                 return "#FFFFFF";
             }
             else{
@@ -388,6 +392,7 @@ class Chores extends React.Component {
                 </thead>
                 <tbody>
                     {this.state.chores_assignees.map((item, i) => {
+                        console.log(item);
                         return (
                             <tr key={item.chore+item.housemate} style={{backgroundColor: this.state.background[i]}}>
                                 <td key={"chore" + i} onClick={() => this.markChoreAsDone(item.chore, item.housemate)}>{item.chore}</td>
