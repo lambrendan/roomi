@@ -9,6 +9,9 @@ roommates can easily share chores lists, rent reminders, parking schedules, and 
 Requirements:
 This a webapp that should be seen locally on Chrome. Please ensure that you use an updated version of Chrome.
 
+Login Credentials:
+You can create your own login credential and household.
+
 Installation Instructions:
 
 1. Clone the repository. Please follow these commands.
