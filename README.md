@@ -48,6 +48,8 @@ Known Bugs:
 1. For shuffling parking, if there are more parking spots than housemates and the user arrives from the Parking Schedule page
 from a different page, the user will need to click twice on the Shuffle Parking Assignments button in order to for the shuffling of the
 parking assignments to occur.
+2. Adding a chore with the same name as an exisiting chore in the chores table may cause the system to crash later when the user tries to 
+delete one of the chores. Or both chores of the same name will be deleted from the table and the database.
 
 Technical Support:
 Brendan Lam - Software Development Lead
