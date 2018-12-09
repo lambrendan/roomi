@@ -24,7 +24,7 @@ class ParkingSchedule extends React.Component {
         this.deleteParking = this.deleteParking.bind(this);
     }
     headingToColumn(){
-        return ["", "Parking Spot", "Assignee"].map((item, i) =>{
+        return ["", "Parking Spot", "Housemate"].map((item, i) =>{
             return <th key={i}>{item}</th>
         })
     }
@@ -186,11 +186,11 @@ class ParkingSchedule extends React.Component {
                 housematequeue.push(temp);
                 this.setState({queue: housematequeue});
             }
-            if(this.state.didMount){
+            /*if(this.state.didMount){
                 let temp = housematequeue.shift();
                 housematequeue.push(temp);
                 this.setState({didMount: false});
-            }
+            }*/
             //ar housemates_with_parking_old = [...this.state.housemates_with_parking];
             while(parkingAssignment.length < length){
                 let housemateNew = housematequeue.shift();
@@ -255,7 +255,7 @@ class ParkingSchedule extends React.Component {
             </Table>
                 <input type="text" onChange={this.handleOnChange} id="parkingInput"/>
                 <Button onClick={this.handleOnClick} disabled={this.state.value.length === 0 ? true : false}>Add Parking Spot</Button>
-                <Button onClick={this.roundRobin}>Shuffle Parking Assignments></Button>
+                <Button onClick={this.roundRobin}>Shuffle Parking Assignments</Button>
                 <p style={{color: 'red'}}>{this.state.canAdd ? "" :  "Error: Can't Add Same Parking Spot" }</p>
             </div>
         )
