@@ -50,12 +50,10 @@ class Chores extends React.Component {
             queue = queue.filter( housemate => !housemateSet.has(housemate));
             queue.push(housemateToCheck);
             this.setState({queue: queue});
-            console.log(queue);
         }
         else{
             housemateToCheck = queue.shift();
             queue.push(housemateToCheck);
-            console.log(queue);
             this.setState({queue: queue});
         }
         var constants = {
@@ -227,7 +225,7 @@ class Chores extends React.Component {
     }
     
     headingToColumn(){
-        return ["Task", "Assignee"].map((item, i) =>{
+        return ["Chore", "Housemate"].map((item, i) =>{
             return <th key={i}>{item}</th>
         })
     }
@@ -299,7 +297,6 @@ class Chores extends React.Component {
             this.setState({isDone: tempIsDone});
             i+=1;
         }
-        //console.log(parkingAssignment);
         choresAssignment.map( data => {
             axios.post('/shuffleChores', data)
             .then( res => {
